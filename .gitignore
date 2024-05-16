@@ -2,4 +2,6 @@
 .vscode/launch.json
 .vscode/settings.json
 build/Debug/outDebug.exe
+build/Debug/bere.o
 bere.exe
+tempCodeRunnerFile.c
