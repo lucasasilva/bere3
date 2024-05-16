@@ -25,3 +25,50 @@ void fMenuPrincipal()
     printf("== Deadlocks Solucoes Empresariais      ==\n");
     printf("==========================================\n");
 }
+
+
+
+void fMenuCadastros()
+{
+
+    system("chcp 65001");//Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
+    system("cls");
+    printf("==========================================\n");
+    printf("============      BERE'S      ============\n");
+    printf("==========================================\n");
+    printf("== Escolha uma das opções de cadastros  ==\n");
+    printf("== 1.   Cadastro de clientes            ==\n");
+    printf("== 2.   Cadastro de Produtos            ==\n");
+    printf("== 3.   Retornar ao Menu Principal      ==\n");
+    printf("==                                      ==\n");
+    printf("==                                      ==\n");
+    printf("==                                      ==\n");
+    printf("==                                      ==\n");
+    printf("== 7.   ENCERRAR O DEADLOCKS - PDV      ==\n");
+    printf("==========================================\n");
+    printf("== Deadlocks Solucoes Empresariais      ==\n");
+    printf("==========================================\n");
+}
+
+
+void fMenuVendas()
+{
+
+    system("chcp 65001");//Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
+    system("cls");
+    printf("==========================================\n");
+    printf("============      BERE'S      ============\n");
+    printf("==========================================\n");
+    printf("== Escolha uma das opções de cadastros  ==\n");
+    printf("== 1.   Nova Venda                      ==\n");
+    printf("== 2.   Sangria                         ==\n");
+    printf("== 3.   Pagamento                       ==\n");
+    printf("== 4.   Retornar ao menu principal      ==\n");
+    printf("==                                      ==\n");
+    printf("==                                      ==\n");
+    printf("==                                      ==\n");
+    printf("== 7.   ENCERRAR O DEADLOCKS - PDV      ==\n");
+    printf("==========================================\n");
+    printf("== Deadlocks Solucoes Empresariais      ==\n");
+    printf("==========================================\n");
+}
