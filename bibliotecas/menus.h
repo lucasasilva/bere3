@@ -8,7 +8,7 @@ void fMenuPrincipal()
 {
 
     system("chcp 65001");//Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
-    system("cls");
+    //system("cls");
     printf("==========================================\n");
     printf("============      BERE'S      ============\n");
     printf("==========================================\n");

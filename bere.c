@@ -5,45 +5,24 @@
 
 /*Bibliotecas personalizadas*/
 #include "./bibliotecas/menus.h"
-
-typedef struct 
-{
-    int codigoProduto;
-    char nomeProduto[80];
-    int categoria;
-    float custoProduto;
-    float margemLucro;
-} Produtos;
-
-typedef struct 
-{
-    char rua[100];
-    int  ruaNumero;
-    char bairro[50];
-} Endereco;
-
-typedef struct 
-{
-   int codigo;
-   char nomeRegistro[150];
-   char nomeSocial[150];
-   char cpf[14];
-   Endereco Endereco;
-} Terceiros;
-
-typedef struct 
-{
-    float totalVendaAtual;
-    float totalVendaDinheiro;
-    float totalVendaCartao;
-    float totalVendidoDia;
-} Vendas;
-
+#include "./bibliotecas/calculaTotaisVendas.h"
+#include "./bibliotecas/structsCadastros.h"
+#include "./bibliotecas/utilidades.h"
 
 
 int main () {
-    int vMenu;
     system("chcp 65001");//Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
+    int vMenu;
+    Terceiros *cliente= (Terceiros *) calloc(1, sizeof(Terceiros));
+    SaldosVendas *saldosVendas= (SaldosVendas *) calloc(1, sizeof(SaldosVendas));
+    Produtos *produto= (Produtos *) calloc(3, sizeof(Produtos));//alocando espaço para 3 produtos, porque é o que teremos visível para teste
+    produto[0].codigoProduto = 1000;
+    strcpy(produto[0].nomeProduto, "Pão Francês");
+    produto[0].categoria = 1;
+    produto[0].custoProduto = 0.80;
+    produto[0].margemLucro = 80.00;
+
+    fRetornaProdutosCadastros(produto, 3, fREtornaCategoria(produto->categoria));
     fMenuPrincipal();
     scanf("%d", &vMenu);
     switch (vMenu)
@@ -58,4 +37,8 @@ int main () {
     default:
         break;
     }
+
+    free(cliente);
+    free(produto);
+    free(saldosVendas);
 }
