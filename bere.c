@@ -2,25 +2,24 @@
 #include <string.h>
 #include <stdlib.h>
 
-
 /*Bibliotecas personalizadas*/
 #include "./bibliotecas/menus.h"
 #include "./bibliotecas/calculaTotaisVendas.h"
 #include "./bibliotecas/structsCadastros.h"
 #include "./bibliotecas/utilidades.h"
 
-
-int main () {
-    system("chcp 65001");//Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
+int main()
+{
+    system("chcp 65001"); // Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
     int vMenu;
     int vInputUsuario;
     int vAlocacaoMemoriaCliente = 1;
     int vAlocacaoMemoriaVendas = 1;
-    int vAlocacaoMemoriaProdutos = 3;//alocando espaço para 3 produtos, porque é o que teremos visível para teste
+    int vAlocacaoMemoriaProdutos = 3; // alocando espaço para 3 produtos, porque é o que teremos visível para teste
 
-    Terceiros *cliente= (Terceiros *) calloc(vAlocacaoMemoriaCliente, sizeof(Terceiros));
-    SaldosVendas *saldosVendas= (SaldosVendas *) calloc(vAlocacaoMemoriaVendas, sizeof(SaldosVendas));
-    Produtos *produto= (Produtos *) calloc(vAlocacaoMemoriaProdutos, sizeof(Produtos));
+    Terceiros *cliente = (Terceiros *)calloc(vAlocacaoMemoriaCliente, sizeof(Terceiros));
+    SaldosVendas *saldosVendas = (SaldosVendas *)calloc(vAlocacaoMemoriaVendas, sizeof(SaldosVendas));
+    Produtos *produto = (Produtos *)calloc(vAlocacaoMemoriaProdutos, sizeof(Produtos));
 
     /*Produtos demonstração;*/
     produto[0].codigoProduto = 1000;
@@ -36,7 +35,7 @@ int main () {
     produto[1].custoProduto = 14.80;
     produto[1].margemLucro = 40.00;
     produto[1].qtdEstoque = 5;
-    
+
     produto[2].codigoProduto = 1002;
     strcpy(produto[2].nomeProduto, "Pão Francês");
     produto[2].categoria = 3;
@@ -44,23 +43,51 @@ int main () {
     produto[2].margemLucro = 80.00;
     produto[2].qtdEstoque = 10;
 
-
-    fRetornaCadastrosProdutos(produto, vAlocacaoMemoriaProdutos);
-    //fMenuPrincipal();
+    fMenuPrincipal();
     scanf("%d", &vMenu);
-    switch (vMenu)
+    do
     {
-    case 1:
-        fMenuCadastros();
-        break;
-    case 2:
-        fMenuVendas();
-        break;
-    
-    default:
-        main();
-        break;
-    }
+
+        switch (vMenu)
+        {
+        case 1://cadastro de produtos
+            do
+            {
+                fMenuCadastros();
+                scanf("%d", &vMenu);
+                if (vMenu == 3){
+                    printf("Retornando ao menu principal\n");   
+                    system("pause");
+                    break;
+                }
+                if (vMenu ==1)
+                {
+                    printf("Quantos produtos deseja cadastrar?\n"); 
+                    scanf("%d", &vInputUsuario);
+                    vAlocacaoMemoriaProdutos += vInputUsuario;
+                    produto= fRealocaProdutos((vAlocacaoMemoriaProdutos), produto);
+                    fCadastraProdutos(vAlocacaoMemoriaProdutos, vInputUsuario, produto);
+                    fRetornaCadastrosProdutos(produto, vAlocacaoMemoriaProdutos);
+                    system("pause");
+
+                }
+                
+            } while (vMenu != 1 || vMenu != 2 || vMenu != 3);
+            
+            break;
+        case 2:
+            fMenuVendas();
+            break;
+
+        case 5:
+            fRetornaCadastrosProdutos(produto, vAlocacaoMemoriaProdutos);
+            system("pause");
+            break;
+        default:
+            main();
+            break;
+        }
+    } while (vMenu != 7);
 
     free(cliente);
     free(produto);
