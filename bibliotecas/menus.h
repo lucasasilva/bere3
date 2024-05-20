@@ -3,6 +3,7 @@
 
 
 
+
 /*----------------MENU PRINCIPAL-----------------------------------------------------*/
 void fMenuPrincipal()
 {
@@ -37,8 +38,8 @@ void fMenuCadastros()
     printf("============      BERE'S      ============\n");
     printf("==========================================\n");
     printf("== Escolha uma das opções de cadastros  ==\n");
-    printf("== 1.   Cadastro de clientes            ==\n");
-    printf("== 2.   Cadastro de Produtos            ==\n");
+    printf("== 1.   Cadastro de Produtos            ==\n");
+    printf("== 2.   Cadastro de clientes            ==\n");
     printf("== 3.   Retornar ao Menu Principal      ==\n");
     printf("==                                      ==\n");
     printf("==                                      ==\n");

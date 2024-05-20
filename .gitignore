@@ -5,3 +5,4 @@ build/Debug/outDebug.exe
 build/Debug/bere.o
 bere.exe
 tempCodeRunnerFile.c
+.vscode/tasks.json
