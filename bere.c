@@ -84,9 +84,12 @@ int main()
             system("pause");
             break;
         default:
-            main();
+            fMenuPrincipal();
+            scanf("%d", &vMenu);
             break;
         }
+        fMenuPrincipal();
+        scanf("%d", &vMenu);
     } while (vMenu != 7);
 
     free(cliente);
