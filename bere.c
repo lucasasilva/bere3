@@ -13,6 +13,8 @@ int main()
     system("chcp 65001"); // Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
     int vMenu;
     int vInputUsuario;
+    /*Uma forma de mantermos controle sobre quanto temos alocado e quantos produtos temos "cadastrados" já que essa bosta dessa linguagem
+    não permite o rastreio de quantos bytes uma variável tem alocada em memória.*/
     int vAlocacaoMemoriaCliente = 1;
     int vAlocacaoMemoriaVendas = 1;
     int vAlocacaoMemoriaProdutos = 3; // alocando espaço para 3 produtos, porque é o que teremos visível para teste
@@ -67,10 +69,12 @@ int main()
                     vAlocacaoMemoriaProdutos += vInputUsuario;
                     produto= fRealocaProdutos((vAlocacaoMemoriaProdutos), produto);
                     fCadastraProdutos(vAlocacaoMemoriaProdutos, vInputUsuario, produto);
-                    fRetornaCadastrosProdutos(produto, vAlocacaoMemoriaProdutos);
-                    system("pause");
-
                 }
+                else if (vMenu==2)
+                {
+                    /* code */
+                }
+                
                 
             } while (vMenu != 1 || vMenu != 2 || vMenu != 3);
             
@@ -83,6 +87,9 @@ int main()
             fRetornaCadastrosProdutos(produto, vAlocacaoMemoriaProdutos);
             system("pause");
             break;
+        case 7:
+        printf("Obrigado por usar o deadlocks PDV!\n"); 
+        exit(0);
         default:
             fMenuPrincipal();
             scanf("%d", &vMenu);
