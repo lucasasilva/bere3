@@ -4,16 +4,16 @@
 
 /*Bibliotecas personalizadas*/
 #include "./bibliotecas/menus.h"
+#include "./bibliotecas/structsCadastrosProdutos.h"
+#include "./bibliotecas/structCadastrosTerceiros.h"
 #include "./bibliotecas/calculaTotaisVendas.h"
-#include "./bibliotecas/structsCadastros.h"
-#include "./bibliotecas/utilidades.h"
 
 int main()
 {
     system("chcp 65001"); // Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
     int vMenu;
     int vInputUsuario;
-    /*Uma forma de mantermos controle sobre quanto temos alocado e quantos produtos temos "cadastrados" já que essa bosta dessa linguagem
+    /*Uma forma de manter controle sobre quanto temos alocado e quantos produtos temos "cadastrados", já que essa bosta dessa linguagem
     não permite o rastreio de quantos bytes uma variável tem alocada em memória.*/
     int vAlocacaoMemoriaCliente = 1;
     int vAlocacaoMemoriaVendas = 1;
