@@ -98,11 +98,27 @@ int main()
             break;
         case 4: //fechamento caixa
             break;
-        case 5:
-            fRetornaCadastrosProdutos(produto, vAlocacaoMemoriaProdutos);
-            system("pause");
+        case 5://Relatórios
+            do
+            {
+                fMenuRelatorios();
+                fscanf(stdin,"%d",&vMenu); 
+                switch (vMenu)
+                {
+                case 1://produtos   
+                    fRetornaCadastrosProdutos(produto, vAlocacaoMemoriaProdutos);
+                    break;
+                case 2://clientes
+                    fRetornaClientesCadastrados(cliente, vAlocacaoMemoriaCliente);
+                    break;
+                default:
+                    fMenuRelatorios();
+                    fscanf(stdin,"%d",&vMenu); 
+                    break;
+                }
+            } while (vMenu != 3);            
             break;
-        case 7:
+        case 7://Encerra o programa.
         printf("Obrigado por usar o deadlocks PDV!\n"); 
         exit(0);
         default:
@@ -115,6 +131,9 @@ int main()
     } while (vMenu != 7);
 
     free(cliente);
+    cliente = NULL;
     free(produto);
+    produto = NULL;
     free(saldosVendas);
+    saldosVendas = NULL;
 }
