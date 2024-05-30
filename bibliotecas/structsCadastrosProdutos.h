@@ -73,7 +73,9 @@ void fCadastraProdutos (int tamanhoAtual, int inputUsuario,Produtos *novoProduto
     }
 }
 
-/*Retorna os produtos cadastrados*/
+/*Retorna os produtos cadastrados. strtok() serve para que  o enter (\n), que o C captura quando digitamos o nome do produto,
+não seja printado junto na exibição, quebrando o leiaute que já não é lá essa coca-cola toda.
+tem uma condição para cada categoria para ficar bonitinho na tela apenas*/
 void fRetornaCadastrosProdutos (Produtos *produto, int tamanhoAlocado){    
     system("cls");
     printf("%-8s %-19s %-20s %-10s %-16s %-20s\n","Código", "Nome", "Categoria", "Custo", "Margem de Lucro(%)", "Quantidade em Estoque"); 
