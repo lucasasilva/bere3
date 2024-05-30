@@ -56,7 +56,7 @@ Produtos* fRealocaProdutos (int novoTamanho, Produtos *produto){
 void fCadastraProdutos (int tamanhoAtual, int inputUsuario,Produtos *novoProduto){
     for (int i = (tamanhoAtual-inputUsuario); i <(tamanhoAtual); i++)
     {
-        //system("cls");
+        system("cls");
         printf("Informe o código do novo produto\n"); 
         scanf("%d", &novoProduto[i].codigoProduto);
         getchar();
@@ -74,10 +74,10 @@ void fCadastraProdutos (int tamanhoAtual, int inputUsuario,Produtos *novoProduto
 }
 
 /*Retorna os produtos cadastrados*/
-void fRetornaCadastrosProdutos (Produtos *produto, int tamanho){    
+void fRetornaCadastrosProdutos (Produtos *produto, int tamanhoAlocado){    
     system("cls");
     printf("%-8s %-19s %-20s %-10s %-16s %-20s\n","Código", "Nome", "Categoria", "Custo", "Margem de Lucro(%)", "Quantidade em Estoque"); 
-    for (int i = 0; i < tamanho; i++) {
+    for (int i = 0; i < tamanhoAlocado; i++) {
         if (produto[i].categoria== 1)
         {
             printf("%-7d %-19s %-20s %-10.2f %-20.2f %-20d\n",  produto[i].codigoProduto, strtok(produto[i].nomeProduto,"\n"), fREtornaCategoria(produto[i].categoria), produto[i].custoProduto, produto[i].margemLucro, produto[i].qtdEstoque);
