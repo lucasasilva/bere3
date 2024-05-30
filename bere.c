@@ -4,8 +4,9 @@
 
 /*Bibliotecas personalizadas*/
 #include "./bibliotecas/menus.h"
+#include "./bibliotecas/structsCadastrosProdutos.h"
+#include "./bibliotecas/structCadastrosTerceiros.h"
 #include "./bibliotecas/calculaTotaisVendas.h"
-#include "./bibliotecas/structsCadastros.h"
 #include "./bibliotecas/utilidades.h"
 
 int main()
@@ -13,8 +14,10 @@ int main()
     system("chcp 65001"); // Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
     int vMenu;
     int vInputUsuario;
-    int vAlocacaoMemoriaCliente = 1;
-    int vAlocacaoMemoriaVendas = 1;
+    /*Uma forma de manter controle sobre quanto temos alocado e quantos produtos temos "cadastrados", já que essa bosta dessa linguagem
+    não permite o rastreio de quantos bytes uma variável tem alocada em memória.*/
+    int vAlocacaoMemoriaCliente = 0;
+    int vAlocacaoMemoriaVendas = 0;
     int vAlocacaoMemoriaProdutos = 3; // alocando espaço para 3 produtos, porque é o que teremos visível para teste
 
     Terceiros *cliente = (Terceiros *)calloc(vAlocacaoMemoriaCliente, sizeof(Terceiros));
@@ -45,12 +48,12 @@ int main()
 
     fMenuPrincipal();
     scanf("%d", &vMenu);
-    do
+
     {
 
         switch (vMenu)
         {
-        case 1://cadastro de produtos
+        case 1://cadastros
             do
             {
                 fMenuCadastros();
@@ -67,29 +70,70 @@ int main()
                     vAlocacaoMemoriaProdutos += vInputUsuario;
                     produto= fRealocaProdutos((vAlocacaoMemoriaProdutos), produto);
                     fCadastraProdutos(vAlocacaoMemoriaProdutos, vInputUsuario, produto);
-                    fRetornaCadastrosProdutos(produto, vAlocacaoMemoriaProdutos);
+                    printf("Retornando ao menu!\n"); 
                     system("pause");
-
                 }
-                
-            } while (vMenu != 1 || vMenu != 2 || vMenu != 3);
+                else if (vMenu==2)
+                {
+                    printf("Quantos clientes deseja cadastrar?\n");     
+                    scanf("%d", &vInputUsuario);
+                    vAlocacaoMemoriaCliente += vInputUsuario;
+                    cliente = fRealocaClientes((vAlocacaoMemoriaCliente), cliente);
+                    fCadastraClientes(vAlocacaoMemoriaCliente, vInputUsuario, cliente);
+                    printf("Retornando ao menu\n"); 
+                    system("pause");
+                }
+                else if ((vMenu!=1 || vMenu!= 2 || vMenu!=3))
+                {
+                    printf("Opção inválida! selecione uma das opções do menu, entre:\n1 Cadastrar produtos\n2 Cadastrar clientes\n3 Sair\n"); 
+                    scanf("%d", &vMenu);
+                }   
+            } while (vMenu != 3);
             
             break;
-        case 2:
+        case 2://vendas
             fMenuVendas();
             break;
-
-        case 5:
-            fRetornaCadastrosProdutos(produto, vAlocacaoMemoriaProdutos);
-            system("pause");
+        case 3: //abertura caixa
             break;
+        case 4: //fechamento caixa
+            break;
+        case 5://Relatórios
+            do
+            {
+                fMenuRelatorios();
+                fscanf(stdin,"%d",&vMenu); 
+                switch (vMenu)
+                {
+                case 1://produtos   
+                    fRetornaCadastrosProdutos(produto, vAlocacaoMemoriaProdutos);
+                    break;
+                case 2://clientes
+                    fRetornaClientesCadastrados(cliente, vAlocacaoMemoriaCliente);
+                    break;
+                default:
+                    fMenuRelatorios();
+                    fscanf(stdin,"%d",&vMenu); 
+                    break;
+                }
+            } while (vMenu != 3);            
+            break;
+        case 7://Encerra o programa.
+        printf("Obrigado por usar o deadlocks PDV!\n"); 
+        exit(0);
         default:
-            main();
+            fMenuPrincipal();
+            scanf("%d", &vMenu);
             break;
         }
+        fMenuPrincipal();
+        scanf("%d", &vMenu);
     } while (vMenu != 7);
 
     free(cliente);
+    cliente = NULL;
     free(produto);
+    produto = NULL;
     free(saldosVendas);
+    saldosVendas = NULL;
 }
