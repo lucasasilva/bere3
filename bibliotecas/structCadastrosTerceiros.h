@@ -42,7 +42,7 @@ Terceiros* fRealocaClientes (int novoTamanho, Terceiros *clientes){
     }
     
 }
-
+/*função para cadastro de clientes, auto explicativa*/
 void fCadastraClientes (int tamanhoAtual, int inputUsuario, Terceiros *cliente){
     char clientePossuiNomeSocial;
     for (int i = (tamanhoAtual-inputUsuario); i < tamanhoAtual; i++)
@@ -58,9 +58,12 @@ void fCadastraClientes (int tamanhoAtual, int inputUsuario, Terceiros *cliente){
         {
             printf("Entre com o nome social do cliente \n"); 
             fgets(cliente[i].nomeSocial, 150, stdin);
-        }else
+        }else 
         {
-            strcpy(cliente[i].nomeSocial, cliente[i].nomeRegistro);
+            //strcpy() copia a string usada no segundo argumetno, para o primeiro
+            //como estamos usando ponteiro, não dá para fazer cliente[i].nome = "texto", porque um ponteiro não é uma variável
+            //em vez disso, dizemos que a posição na memória para onde cliente[i].nomeSocial está apontando vai receber "texto"
+            strcpy(cliente[i].nomeSocial, "Não Possui");
         }
         printf("Entre com o CPF do cliente (somente Numeros):\n"); 
         fgets(cliente[i].cpf, 14, stdin);
@@ -80,7 +83,14 @@ void fCadastraClientes (int tamanhoAtual, int inputUsuario, Terceiros *cliente){
     }
 }
 
-void fRetornaClientesCadastrados(){
+/*Para o relatório de clientes cadastrados. strtok() serve para que o enter (\n) que o C captura quando digitamos o nome do cliente, cidade, enfim,
+todo tipo de string, não seja printado junto na exibição, quebrando o leiaute que já não é lá essa coca-cola toda*/
+void fRetornaClientesCadastrados(Terceiros* cliente, int tamanhoAlocado){
+    printf("%-20s,%-20s,%-20s,%-20s,%-20s,%-20s,%-20s,%-20s,%-20s,%-20s-\n","Cod. Cliente", "Nome Registro", "Nome Social", "CPF", "Estado(UF)", "CEP", "Cidade", "Bairro", "Rua", "Numero"); 
+    for (int i = 0; i < tamanhoAlocado; i++)
+    {
+        printf("%d %s %s %s %s %s %s %s %s %d\n",cliente[i].codigo, strtok(cliente[i].nomeRegistro, "\n"), strtok(cliente[i].nomeSocial, "\n"), strtok(cliente[i].cpf, "\n"), fRetornaEstadoCliente(cliente[i].Endereco.UFCliente), strtok(cliente[i].Endereco.CEP_ZIPCODE, "\n"), strtok(cliente[i].Endereco.cidade, "\n"), strtok(cliente[i].Endereco.bairro, "\n"), strtok(cliente[i].Endereco.rua, "\n"), cliente[i].Endereco.ruaNumero); 
+    }
     
 }
 
