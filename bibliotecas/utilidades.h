@@ -54,6 +54,7 @@ void fImprimeEstadosTela (){
             printf("\n"); 
         }       
     }
+    printf("\n"); 
 }
 
 

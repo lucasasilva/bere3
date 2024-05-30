@@ -50,14 +50,16 @@ void fCadastraClientes (int tamanhoAtual, int inputUsuario, Terceiros *cliente){
         system("cls");
         printf("Entre com o código do novo cliente\n"); 
         scanf("%d", &cliente[i].codigo);
+        getchar();
         printf("Entre com o nome de registro/batismo do novo cliente\n"); 
         fgets(cliente[i].nomeRegistro, 150, stdin);
         printf("Cliente possui nome social?\n"); 
         scanf(" %c", &clientePossuiNomeSocial);
-        if (toupper(clientePossuiNomeSocial =='S'))
+        if (toupper(clientePossuiNomeSocial) =='S')
         {
             printf("Entre com o nome social do cliente \n"); 
             fgets(cliente[i].nomeSocial, 150, stdin);
+            getchar();
         }else 
         {
             //strcpy() copia a string usada no segundo argumetno, para o primeiro
@@ -65,11 +67,13 @@ void fCadastraClientes (int tamanhoAtual, int inputUsuario, Terceiros *cliente){
             //em vez disso, dizemos que a posição na memória para onde cliente[i].nomeSocial está apontando vai receber "texto"
             strcpy(cliente[i].nomeSocial, "Não Possui");
         }
+        getchar();
         printf("Entre com o CPF do cliente (somente Numeros):\n"); 
         fgets(cliente[i].cpf, 14, stdin);
         printf("Entre com a UF do Cliente\n"); 
         fImprimeEstadosTela();
-        scanf("%d", cliente[i].Endereco.UFCliente); 
+        scanf("%d", &cliente[i].Endereco.UFCliente); 
+        getchar();
         printf("Entre com o CEP e ou ZIP Code do cliente\n"); 
         fgets(cliente[i].Endereco.CEP_ZIPCODE, 20, stdin);
         printf("Entre com cidade do cliente\n"); 
