@@ -12,7 +12,7 @@
 int main()
 {
     system("chcp 65001"); // Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
-    int vMenu;
+    int vMenu, vMenuRel;
     int vInputUsuario;
     /*Uma forma de manter controle sobre quanto temos alocado e quantos produtos temos "cadastrados", já que essa bosta dessa linguagem
     não permite o rastreio de quantos bytes uma variável tem alocada em memória.*/
@@ -49,8 +49,8 @@ int main()
     fMenuPrincipal();
     scanf("%d", &vMenu);
 
+    do 
     {
-
         switch (vMenu)
         {
         case 1://cadastros
@@ -102,32 +102,40 @@ int main()
             do
             {
                 fMenuRelatorios();
-                fscanf(stdin,"%d",&vMenu); 
-                switch (vMenu)
+                scanf("%d", &vMenu);
+                if (vMenu==4)
                 {
-                case 1://produtos   
-                    fRetornaCadastrosProdutos(produto, vAlocacaoMemoriaProdutos);
-                    break;
-                case 2://clientes
-                    fRetornaClientesCadastrados(cliente, vAlocacaoMemoriaCliente);
-                    break;
-                default:
-                    fMenuRelatorios();
-                    fscanf(stdin,"%d",&vMenu); 
+                    printf("Retornando ao menu principal\n"); 
+                    system("pause");
                     break;
                 }
-            } while (vMenu != 3);            
+                if (vMenu == 1)
+                {
+                    fRetornaCadastrosProdutos(produto, vAlocacaoMemoriaProdutos);
+                    system("pause");
+                }
+                else if (vMenu ==2)
+                {
+                    fRetornaClientesCadastrados(cliente, vAlocacaoMemoriaCliente);
+                    system("pause");
+                }
+                else if ((vMenu!=1 || vMenu!= 2 || vMenu!=4))
+                {
+                    printf("Opção inválida! selecione uma das opções do menu, entre:\n1 Produtos Cadastrados\n2 Clientes Cadastrados\n4 Sair\n"); 
+                    scanf("%d", &vMenu);
+                }    
+            } while (vMenu != 4);            
             break;
         case 7://Encerra o programa.
-        printf("Obrigado por usar o deadlocks PDV!\n"); 
-        exit(0);
+            printf("Obrigado por usar o deadlocks PDV!\n"); 
+            exit(0);
         default:
             fMenuPrincipal();
             scanf("%d", &vMenu);
             break;
         }
-        fMenuPrincipal();
-        scanf("%d", &vMenu);
+            fMenuPrincipal();
+            scanf("%d", &vMenu);
     } while (vMenu != 7);
 
     free(cliente);
