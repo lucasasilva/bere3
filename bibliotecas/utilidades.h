@@ -3,8 +3,8 @@
 
 #include <stdio.h>
 #include <string.h>
-
-const char* fRetornaEstadoCliente(int numero) {
+/*Retorna uma string com o nome do UF do cliente no relatório*/
+char* fRetornaEstadoCliente(int numero) {
     switch (numero) {
         case 1: return "Acre";
         case 2: return "Alagoas";
@@ -36,7 +36,7 @@ const char* fRetornaEstadoCliente(int numero) {
         default: return "Não Cadastrado/Estrangeiro.";
     }
 }
-
+/*imprime a lista de estados acima na tela, no momento do cadastro;*/
 void fImprimeEstadosTela (){
     for (int i = 0; i < 28; i++)
     {
