@@ -12,17 +12,26 @@
 int main()
 {
     system("chcp 65001"); // Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
-    int vMenu, vMenuRel;
+    int vMenu;
     int vInputUsuario;
+    int vProduto, vQuantidade;
+    char vContinuaCompra = 'S';
+    char vStatusVenda = 'F';//VERIFICA SE HÁ VENDA UMA VENDA EM ABERTO OU NÃO
+
     /*Uma forma de manter controle sobre quanto temos alocado e quantos produtos temos "cadastrados", já que essa bosta dessa linguagem
     não permite o rastreio de quantos bytes uma variável tem alocada em memória.*/
     int vAlocacaoMemoriaCliente = 0;
     int vAlocacaoMemoriaVendas = 0;
     int vAlocacaoMemoriaProdutos = 3; // alocando espaço para 3 produtos, porque é o que teremos visível para teste
+    int vIndiceVenda = 0;
+    int vIndiceProduto =0 ; //seve para adicionarmos mais itens a venda;
+    SaldosVendas vsaldosVendas;
+
 
     Terceiros *cliente = (Terceiros *)calloc(vAlocacaoMemoriaCliente, sizeof(Terceiros));
-    SaldosVendas *saldosVendas = (SaldosVendas *)calloc(vAlocacaoMemoriaVendas, sizeof(SaldosVendas));
     Produtos *produto = (Produtos *)calloc(vAlocacaoMemoriaProdutos, sizeof(Produtos));
+    VendaAtual* vVendaAtual = NULL;//Commo a pessoa pode entrar na tela mas NÃO escolher nada, melhor não alocar memória;
+
 
     /*Produtos demonstração;*/
     produto[0].codigoProduto = 1000;
@@ -30,7 +39,7 @@ int main()
     produto[0].categoria = 1;
     produto[0].custoProduto = 01.20;
     produto[0].margemLucro = 62.50;
-    produto[0].qtdEstoque = 2;
+    produto[0].qtdEstoque = 0;
 
     produto[1].codigoProduto = 1001;
     strcpy(produto[1].nomeProduto, "Café");
@@ -92,7 +101,54 @@ int main()
             
             break;
         case 2://vendas
-            fMenuVendas();
+            do
+            {
+                fMenuVendas();
+                scanf("%d", &vMenu);
+                switch (vMenu)
+                {
+                case 1://nova venda
+                    do
+                    {
+                        fExibeProdutosTelaVenda(produto, vAlocacaoMemoriaProdutos);
+                        printf("Qual produto deseja comprar ou 4 para sair: "); 
+                        scanf("%d", &vProduto);
+                        if (vProduto==4)
+                        {
+                            printf("Retornando ao menu principal\n"); 
+                            system("pause");
+                            break;
+                        }
+                        printf("Qual a quantidade que deseja comprar: "); 
+                        scanf("%d", &vQuantidade);
+                        vStatusVenda = 'A';
+                        vVendaAtual = fAlocaMemoriaProdutos(vVendaAtual,vIndiceProduto);//Como foi colocada uma quantidade, agora sim aloca memória;
+                        fRegistraprodutosVendaAtual(vProduto, vIndiceProduto, vAlocacaoMemoriaProdutos, vVendaAtual, vQuantidade);
+                        printf("Deseja continuar comprando? S/N\n"); 
+                        scanf(" %c", &vContinuaCompra);    
+                        if (toupper(vContinuaCompra)=='S')
+                        {
+                            //Se a pessoa escolhe continuar comprando, atualiza o índice do produto para que os produtos, nas chamadas acima, possam ser atualizados corretamente
+                            vIndiceProduto+=1;
+                        }
+                                        
+                    } while (toupper(vContinuaCompra)!='N');                  
+                    break;
+                case 2://SANGRIA
+                    break;
+                case 3://PAGAMENTO
+                    break;
+                case 4:
+                    printf("Retornando ao menu principal\n"); 
+                    system("pause");
+                    break;
+                default:
+                    fMenuVendas();
+                    printf("Opção inválida!\n"); 
+                    scanf("%d", &vMenu);
+                    break;
+                }
+            } while (vMenu!=4);            
             break;
         case 3: //abertura caixa
             break;
@@ -103,18 +159,18 @@ int main()
             {
                 fMenuRelatorios();
                 scanf("%d", &vMenu);
-                if (vMenu==4)
+                if (vMenu==4)//escolheu sair
                 {
                     printf("Retornando ao menu principal\n"); 
                     system("pause");
                     break;
                 }
-                if (vMenu == 1)
+                if (vMenu == 1)//relatório de produtos cadastrados
                 {
                     fRetornaCadastrosProdutos(produto, vAlocacaoMemoriaProdutos);
                     system("pause");
                 }
-                else if (vMenu ==2)
+                else if (vMenu ==2)//relatório de clientes cadastrados
                 {
                     fRetornaClientesCadastrados(cliente, vAlocacaoMemoriaCliente);
                     system("pause");
@@ -131,6 +187,7 @@ int main()
             exit(0);
         default:
             fMenuPrincipal();
+            printf("Opção inválida!\n"); 
             scanf("%d", &vMenu);
             break;
         }
@@ -142,6 +199,4 @@ int main()
     cliente = NULL;
     free(produto);
     produto = NULL;
-    free(saldosVendas);
-    saldosVendas = NULL;
 }
