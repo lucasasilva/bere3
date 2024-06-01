@@ -3,7 +3,9 @@
 
 #include <stdio.h>
 #include <string.h>
-/*Retorna uma string com o nome do UF do cliente no relatório*/
+/*Retorna uma string com o nome do UF do cliente no relatório de clientes
+e na exibição em tela, no momento do cadastro, assim padroniza o código da UF
+e evita um cliente do "Paraná" e outro do "Parná"*/
 char* fRetornaEstadoCliente(int numero) {
     switch (numero) {
         case 1: return "Acre";
@@ -36,7 +38,7 @@ char* fRetornaEstadoCliente(int numero) {
         default: return "Não Cadastrado/Estrangeiro.";
     }
 }
-/*imprime a lista de estados acima na tela, no momento do cadastro;*/
+/*imprime a lista de estados acima, na tela, no momento do cadastro;*/
 void fImprimeEstadosTela (){
     for (int i = 0; i < 28; i++)
     {
