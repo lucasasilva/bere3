@@ -29,7 +29,7 @@ typedef struct
 } Terceiros;
 
 
-/*Libera memória para o cadastro de uma ou mais clientes*/
+/*Libera memória para o cadastro de uma ou mais clientes, retornando o novo endereço de memória, com tamanho ajustado;*/
 Terceiros* fRealocaClientes (int novoTamanho, Terceiros *clientes){
     Terceiros *retornaRealloc =(Terceiros *) realloc(clientes, novoTamanho*sizeof(Terceiros));
     if (retornaRealloc == NULL)
@@ -45,14 +45,14 @@ Terceiros* fRealocaClientes (int novoTamanho, Terceiros *clientes){
 /*função para cadastro de clientes, auto explicativa*/
 void fCadastraClientes (int tamanhoAtual, int inputUsuario, Terceiros *cliente){
     char clientePossuiNomeSocial;
-    char temporaria[150];
+    char temporaria[150];//armazena tudo o que for integer para posterior conversão; para eviter de por getchar() em todo canto;
     for (int i = (tamanhoAtual-inputUsuario); i < tamanhoAtual; i++)
     {
         system("cls");
         getchar();
         printf("Entre com o código do novo cliente\n"); 
         fgets(temporaria, 150, stdin);
-        sscanf(temporaria, "%d", &cliente[i].codigo);
+        sscanf(temporaria, "%d", &cliente[i].codigo); //converte o código do cliente de char para integer
 
         printf("Entre com o nome de registro/batismo do novo cliente\n"); 
         fgets(cliente[i].nomeRegistro, 150, stdin);
@@ -114,7 +114,9 @@ void fRetornaClientesCadastrados(Terceiros* cliente, int tamanhoAlocado) {
         char* cidade = strtok(cliente[i].Endereco.cidade, "\n");
         char* bairro = strtok(cliente[i].Endereco.bairro, "\n");
         char* rua = strtok(cliente[i].Endereco.rua, "\n");
-
+        /*Basicametne, se houve um erro no preenchimento, memória desalocada ou qualquer outra coisa que
+        faça com que a variável criada acim a(que recebe a versão sem o \n) esteja como NULL, ele imprime uma 
+        string vazia*/
         printf("%-15d %-20s %-20s %-15s %-10s %-10s %-15s %-15s %-20s %-10d\n", 
                cliente[i].codigo, 
                nomeRegistro ? nomeRegistro : "", 
