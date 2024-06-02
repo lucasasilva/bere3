@@ -18,7 +18,7 @@ typedef struct
 } Produtos;
 
 
-/*libera para preencher um número no cadastro, em vez de digitar
+/*libera para preencher um número no cadastro, em vez de digitar "material de limpeza"
 No momento de imprimir na tela, busca o retorno aqui para saber qual é*/
 char* fREtornaCategoria(int categoria){
     switch (categoria)
