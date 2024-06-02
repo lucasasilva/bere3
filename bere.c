@@ -7,32 +7,36 @@
 #include "./bibliotecas/structsCadastrosProdutos.h"
 #include "./bibliotecas/structCadastrosTerceiros.h"
 #include "./bibliotecas/calculaTotaisVendas.h"
+#include "./bibliotecas/structPagamentos.h"
 #include "./bibliotecas/utilidades.h"
 
 int main()
 {
-    system("chcp 65001"); // Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
+    system("chcp 65001"); // Muda a págica de código dos consoles para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
     int vMenu;
     int vInputUsuario;
     int vProduto, vQuantidade;
-    char vContinuaCompra = 'S';
-    char vStatusVenda = 'F';//VERIFICA SE HÁ VENDA UMA VENDA EM ABERTO OU NÃO
 
     /*Uma forma de manter controle sobre quanto temos alocado e quantos produtos temos "cadastrados", já que essa bosta dessa linguagem
     não permite o rastreio de quantos bytes uma variável tem alocada em memória.*/
     int vAlocacaoMemoriaCliente = 0;
     int vAlocacaoMemoriaVendas = 0;
     int vAlocacaoMemoriaProdutos = 3; // alocando espaço para 3 produtos, porque é o que teremos visível para teste
-    int vIndiceVenda = 0;
+
+    int vIndiceVenda = 0;//indice das vendas armazenadas no dia. Pensem isso como um "generator".
     int vIndiceProduto =0 ; //seve para adicionarmos mais itens a venda;
+
     float vTotalVendaAtual = 0;
+    float vRetiradaCaixa;
     char vValidaAberturaCaixa = 'N';
+    char vContinuaCompra = 'S';
+    char vStatusVenda = 'F';//VERIFICA SE HÁ VENDA UMA VENDA EM ABERTO OU NÃO
     SaldosVendas vsaldosVendas;
 
 
     Terceiros *cliente = (Terceiros *)calloc(vAlocacaoMemoriaCliente, sizeof(Terceiros));
     Produtos *produto = (Produtos *)calloc(vAlocacaoMemoriaProdutos, sizeof(Produtos));
-    VendaAtual* vVendaAtual = NULL;//Commo a pessoa pode entrar na tela mas NÃO escolher nada, melhor não alocar memória e nem deixar o ponteiro locaço apontando para qualquer coisa
+    VendaAtual* vVendaAtual = NULL;//Commo a pessoa pode entrar na tela mas NÃO escolher nada, melhor não alocar memória e nem deixar o ponteiro locaço, apontando para qualquer coisa
     HistoricoVendas* vVendasDia = NULL;
 
     /*Produtos demonstração;*/
@@ -74,7 +78,7 @@ int main()
                     system("pause");
                     break;
                 }
-                if (vMenu ==1)
+                if (vMenu ==1)//produtos
                 {
                     printf("Quantos produtos deseja cadastrar?\n"); 
                     scanf("%d", &vInputUsuario);
@@ -84,7 +88,7 @@ int main()
                     printf("Retornando ao menu!\n"); 
                     system("pause");
                 }
-                else if (vMenu==2)
+                else if (vMenu==2)//clientes
                 {
                     printf("Quantos clientes deseja cadastrar?\n");     
                     scanf("%d", &vInputUsuario);
@@ -148,7 +152,7 @@ int main()
                         vStatusVenda = 'A';
                         vVendaAtual = fAlocaMemoriaProdutos(vVendaAtual,vIndiceProduto);//Como foi colocada uma quantidade, agora sim aloca memória;
                         fRegistraprodutosVendaAtual(vProduto, vIndiceProduto, vAlocacaoMemoriaProdutos, vVendaAtual, vQuantidade, produto);
-                        vTotalVendaAtual=fRetornaTotalVendaAtual(vVendaAtual, vIndiceProduto);
+                        vTotalVendaAtual+=fRetornaTotalVendaAtual(vVendaAtual, vIndiceProduto);
                         printf("Deseja continuar comprando? S/N\n"); 
                         scanf(" %c", &vContinuaCompra);    
                         if (toupper(vContinuaCompra)=='S')
@@ -166,13 +170,18 @@ int main()
                         system("pause");
                         break;
                     }
-                    if (vsaldosVendas.saldoDisponivelDinheiro <=50)
+                    printf("Valor disponível para retirada: R$ %.2f\n",vsaldosVendas.saldoDisponivelDinheiro); 
+                    printf("Qual valor deseja retirar\n"); 
+                    scanf("%f", &vRetiradaCaixa);
+                    while ((vsaldosVendas.saldoDisponivelDinheiro - vRetiradaCaixa)<50)
                     {
-                        printf("Valor disponível no fundo de caixa menor que o mínimo, não é possível realizar sangria!\n"); 
-                        system("pause");
-                        break;
-                    }
-                    
+                        printf("Valor disponível no fundo de caixa ficará menor que o mínimo de R$ 50.00, não é possível realizar sangria!\n"); 
+                        printf("Informe um valor diferente\n"); 
+                        printf("Valor disponível para retirada: R$ %.2f\n",vsaldosVendas.saldoDisponivelDinheiro); 
+                        scanf("%f", &vRetiradaCaixa);
+                    }    
+                    vsaldosVendas.vSangriasdias += vRetiradaCaixa;
+                    vsaldosVendas.saldoDisponivelDinheiro-= vRetiradaCaixa;    
                     break;
                 case 3://PAGAMENTO
                     if (toupper(vValidaAberturaCaixa) == 'N')
@@ -181,6 +190,27 @@ int main()
                         system("pause");
                         break;
                     }
+                    if (vStatusVenda =='F')
+                    {
+                        printf("Não há uma venda aberta no momento!\n"); 
+                        system("pause");
+                        break;
+                    }
+                    do
+                    {
+                        fMenuPagamento(vTotalVendaAtual);
+                        scanf("%d", &vInputUsuario);
+                    } while (vInputUsuario!=1||vInputUsuario!=2||vInputUsuario!=3);
+                    
+
+                    if (vTotalVendaAtual <= 0)
+                    {
+                        free(vVendaAtual);
+                        vVendaAtual = NULL;
+                        vStatusVenda = 'F';
+                        vIndiceProduto =0;
+                    }
+                    
                     break;
                 case 4:
                     printf("Retornando ao menu principal\n"); 
@@ -195,6 +225,18 @@ int main()
             } while (vMenu!=4);            
             break;
         case 3: //abertura caixa
+            if (toupper(vValidaAberturaCaixa) =='S')
+            {
+                printf("Caixa já está aberto!\n"); 
+                system("pause");
+                break;
+            }else
+            {
+                printf("Qual o valor da abertura?\n"); 
+                scanf("%d", &vsaldosVendas.vValorAberturaCaixa);
+                vsaldosVendas.saldoDisponivelDinheiro = vValidaAberturaCaixa;
+                vValidaAberturaCaixa = 'S';
+            }    
             break;
         case 4: //fechamento caixa
             if (toupper(vValidaAberturaCaixa) == 'N')
@@ -205,7 +247,7 @@ int main()
                 }
             if (vStatusVenda =='A')
             {
-                printf("há uma venda em aberto, proceda o fechamnto antes de fechar o caixa\n"); 
+                printf("Há uma venda em aberto, proceda o fechamnto antes de fechar o caixa\n"); 
                 system("pause");
                 break;
             }
