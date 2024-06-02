@@ -3,6 +3,12 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
+
+
+/*Personalizadas*/
+#include "structsCadastrosProdutos.h"
+
 /*Retorna uma string com o nome do UF do cliente no relatório de clientes
 e na exibição em tela, no momento do cadastro, assim padroniza o código da UF
 e evita um cliente do "Paraná" e outro do "Parná"*/
@@ -59,5 +65,16 @@ void fImprimeEstadosTela (){
     printf("\n"); 
 }
 
-
+/*Valida se o produto apontado pelo usuário existe na lista de produtos cadastrados
+se sim, retona true, se não, bom, retorna false*/
+bool fValidaProdutoCadastrado(int produtoInput, int qtdProdutosCadastrados, Produtos* produtosCadastrados){
+    for (int i = 0; i < qtdProdutosCadastrados; i++)
+    {
+        if (produtosCadastrados[i].codigoProduto == produtoInput)
+        {
+            return true;
+        }  
+    }
+    return false;
+}
 #endif
