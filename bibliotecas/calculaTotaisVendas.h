@@ -12,16 +12,10 @@ typedef struct
     float totalDescontos;
     float totalVendidoDia;
     float saldoDisponivelDinheiro;
+    float vValorAberturaCaixa;
+    float vSangriasdias;
 } SaldosVendas;
 
-/*Esta armazena a venda já fechada e possui um índice (códgo da venda) para ser consultada depois;*/
-typedef struct 
-{
-    int codigoVenda;
-    int codigoProduto;
-    int quantidade;
-    float valorTotalItem;
-} HistoricoVendas;
 
 /*Esta serve para manter o controle da venda corrente e será descarregada na de cima, quando a venda for fechada
 gerando um índice (código de venda)
