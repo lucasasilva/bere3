@@ -120,7 +120,7 @@ void fRetornaCadastrosProdutos (Produtos *produto, int tamanhoAlocado){
 
 void fExibeProdutosTelaVenda (Produtos *produto, int tamanhoAlocado){    
     system("cls");
-    printf("%-8s %-19s %-20s %-10s %-16s %-20s\n",
+    printf("%-8s %-19s %-20s %-10s %-16s\n",
             "Código", "Nome", "Categoria", "Preço Venda",  "Quantidade em Estoque"); 
     for (int i = 0; i < tamanhoAlocado; i++) {
         if (produto[i].categoria== 1)
@@ -153,7 +153,28 @@ void fExibeProdutosTelaVenda (Produtos *produto, int tamanhoAlocado){
     }
 }
 
-
-
+char* fRetornaNomeProduto(int produto, int qtdProdutosCadastrados, Produtos* vListaProdutos){
+    
+    for (int i = 0; i < qtdProdutosCadastrados; i++)
+    {
+        if (vListaProdutos[i].codigoProduto == produto)
+        {
+            return vListaProdutos[i].nomeProduto;
+        }
+        
+    }
+    
+}
+/*funções idiotas porque não pode gravar o preço de venda do produto no cadastro*/
+float fRetornaPrecoVenda(int produto, int qtdProdutosCadastrados, Produtos* vListaProdutos){
+    for (int i = 0; i < qtdProdutosCadastrados; i++)
+    {
+        if (vListaProdutos[i].codigoProduto == produto)
+        {
+            return (vListaProdutos[i].custoProduto+(vListaProdutos[i].custoProduto * (vListaProdutos[i].margemLucro/100)));
+        }    
+    }
+    
+}
 
 #endif
