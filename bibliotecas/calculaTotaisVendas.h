@@ -9,6 +9,7 @@ typedef struct
 {
     float totalVendaDinheiro;
     float totalVendaCartao;
+    float totalDescontos;
     float totalVendidoDia;
     float saldoDisponivelDinheiro;
 } SaldosVendas;
@@ -32,12 +33,29 @@ typedef struct
     int quantidade;
     float valorTotalItem;
 } VendaAtual;
+/*Percorre a lista de produtos cadastrados e retorna o "preço de venda" * quantidade escolhida pelo cliente*/
+float fRetornaTotalBrutoProduto(int codProduto, int qtdProdutosCadastrados, int qtdCompra, Produtos* produto){
+    float precoVenda = 0;
+    float valorTotalItem= 0;
+    for (int i = 0; i < qtdProdutosCadastrados; i++)
+    {
+        if (produto[i].codigoProduto == codProduto)
+        {
+            precoVenda = fRetornaPrecoVenda(codProduto,qtdProdutosCadastrados, produto);
+            valorTotalItem= (qtdCompra*precoVenda);
+            return valorTotalItem;
+        }    
+    }
+    return 0;
+}
 
-
+/*Aloca memória para +1 produto na lista, sempre que a pessoa escolhe continuar comprando
+se for a primeira vez, libera espaço para 1 produto*/
 VendaAtual* fAlocaMemoriaProdutos(VendaAtual* Venda, int vIndiceProduto){
     VendaAtual* vEndMemoriaAlocada;
     if (vIndiceProduto ==0)
     {
+        
         vEndMemoriaAlocada = (VendaAtual*)calloc((vIndiceProduto+1),sizeof(VendaAtual));
         return vEndMemoriaAlocada;
     } else
@@ -45,30 +63,45 @@ VendaAtual* fAlocaMemoriaProdutos(VendaAtual* Venda, int vIndiceProduto){
         vEndMemoriaAlocada = (VendaAtual*) realloc(Venda,(vIndiceProduto+1)* sizeof(VendaAtual));
         return vEndMemoriaAlocada;
     }
-    return NULL;
+    if (vEndMemoriaAlocada == NULL)
+    {
+        printf("Falha ao alocar memoria\n"); 
+        return NULL;
+    }   
+}
+
+/*Guarda os dados da venda na estrutura*/
+void fRegistraprodutosVendaAtual(int produto, int produtosIndice, int produtosAlocadas, VendaAtual* venda, int quantidade, Produtos* cadProd){
+    venda[produtosIndice].codigoProduto = produto;
+    venda[produtosIndice].quantidade = quantidade,
+    venda[produtosIndice].valorTotalItem = fRetornaTotalBrutoProduto(produto, produtosAlocadas, quantidade, cadProd);
+    venda[produtosIndice].sequenciaProduto = produtosIndice+1;
+}
+/*Exibe os dados da venda atual na tela de forma de pagamento*/
+void fExibeTotaisVendaAtual(int sequenciaProduto, int qtdProdutosCadastrados, VendaAtual* vVenda, Produtos* vListaProdutos){
+    printf("%-7s %-10s %-10s %-10s %-10s\n", 
+           "Código", "Descrição", "Preço Venda", "Quantidade", "Total"); 
+    for (int  i = 0; i < sequenciaProduto; i++)
+    {
+        printf("%-7d %-10s R$ %-10.2f %-8d %-10.2f\n",
+                vVenda[i].codigoProduto,
+                fRetornaNomeProduto(vVenda[i].codigoProduto,qtdProdutosCadastrados, vListaProdutos),
+                fRetornaPrecoVenda(vVenda[i].codigoProduto,qtdProdutosCadastrados, vListaProdutos),
+                vVenda[i].quantidade,
+                vVenda[i].valorTotalItem); 
+    }
     
 }
 
-/*Percorre a lista de produtos cadastrados e retorna o "preço de venda" * quantidade escolhida pelo cliente*/
-float fRetornaTotalBrutoProduto(int codProduto, int qtdProdutosCadastrados, int qtdCompra){
-    Produtos* produto;
-    for (int i = 0; i < qtdProdutosCadastrados; i++)
+float fRetornaTotalVendaAtual(VendaAtual* vVenda, int vSequenciaMaxProduto){
+    float totalVendaAtual=0;
+    for (int i = 0; i <=vSequenciaMaxProduto; i++)
     {
-        if (produto[i].codigoProduto == codProduto)
-        {
-            return (produto[i].custoProduto * (produto[i].margemLucro/100))*qtdCompra;
-        }    
+        totalVendaAtual+=vVenda[i].valorTotalItem;   
     }
-    return 0;
+    return totalVendaAtual;
 }
 
-
-void fRegistraprodutosVendaAtual(int produto, int produtosIndice, int produtosAlocadas, VendaAtual* venda, int quantidade){
-    venda[produtosIndice].codigoProduto = produto;
-    venda[produtosIndice].quantidade = quantidade,
-    venda[produtosIndice].valorTotalItem = fRetornaTotalBrutoProduto(produto, produtosAlocadas, quantidade);
-    venda[produtosIndice].sequenciaProduto = produtosIndice+1;
-}
 
 bool fBloqueiaVendaEstoqueNegativoZerado(Produtos* produto, int quantidadeVenda){
     if ((produto->qtdEstoque- quantidadeVenda) <=0)
