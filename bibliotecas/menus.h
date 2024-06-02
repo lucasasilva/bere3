@@ -7,9 +7,7 @@
 /*----------------MENU PRINCIPAL-----------------------------------------------------*/
 void fMenuPrincipal()
 {
-
-    system("chcp 65001");//Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
-    //system("cls");
+    system("cls");
     printf("==========================================\n");
     printf("============      BERE'S      ============\n");
     printf("==========================================\n");
@@ -28,8 +26,6 @@ void fMenuPrincipal()
 }
 void fMenuCadastros()
 {
-
-    system("chcp 65001");//Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
     system("cls");
     printf("==========================================\n");
     printf("============      BERE'S      ============\n");
@@ -54,8 +50,6 @@ void fMenuCadastros()
 
 void fMenuVendas()
 {
-
-    system("chcp 65001");//Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
     system("cls");
     printf("==========================================\n");
     printf("============      BERE'S      ============\n");
@@ -78,8 +72,6 @@ void fMenuVendas()
 
 void fMenuRelatorios()
 {
-
-    system("chcp 65001");//Muda a págica de código dos consoles windows para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
     system("cls");
     printf("==========================================\n");
     printf("============      BERE'S      ============\n");

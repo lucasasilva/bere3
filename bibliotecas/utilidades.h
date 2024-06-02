@@ -3,8 +3,16 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
-const char* fRetornaEstadoCliente(int numero) {
+
+/*Personalizadas*/
+#include "structsCadastrosProdutos.h"
+
+/*Retorna uma string com o nome do UF do cliente no relatório de clientes
+e na exibição em tela, no momento do cadastro, assim padroniza o código da UF
+e evita um cliente do "Paraná" e outro do "Parná"*/
+char* fRetornaEstadoCliente(int numero) {
     switch (numero) {
         case 1: return "Acre";
         case 2: return "Alagoas";
@@ -36,7 +44,7 @@ const char* fRetornaEstadoCliente(int numero) {
         default: return "Não Cadastrado/Estrangeiro.";
     }
 }
-
+/*imprime a lista de estados acima, na tela, no momento do cadastro;*/
 void fImprimeEstadosTela (){
     for (int i = 0; i < 28; i++)
     {
@@ -54,7 +62,19 @@ void fImprimeEstadosTela (){
             printf("\n"); 
         }       
     }
+    printf("\n"); 
 }
 
-
+/*Valida se o produto apontado pelo usuário existe na lista de produtos cadastrados
+se sim, retona true, se não, bom, retorna false*/
+bool fValidaProdutoCadastrado(int produtoInput, int qtdProdutosCadastrados, Produtos* produtosCadastrados){
+    for (int i = 0; i < qtdProdutosCadastrados; i++)
+    {
+        if (produtosCadastrados[i].codigoProduto == produtoInput)
+        {
+            return true;
+        }  
+    }
+    return false;
+}
 #endif

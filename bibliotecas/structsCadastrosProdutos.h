@@ -14,10 +14,11 @@ typedef struct
     float custoProduto;
     float margemLucro;
     int qtdEstoque;
+    int qtdEstoqueMin;
 } Produtos;
 
 
-/*libera para preencher um número no cadastro, em vez de digitar
+/*libera para preencher um número no cadastro, em vez de digitar "material de limpeza"
 No momento de imprimir na tela, busca o retorno aqui para saber qual é*/
 char* fREtornaCategoria(int categoria){
     switch (categoria)
@@ -37,7 +38,7 @@ char* fREtornaCategoria(int categoria){
     }
 }
 
-/*Libera memória para o cadastro de um ou mais novos Produtos*/
+/*Libera memória para o cadastro de um ou mais novos Produtos, retornando o novo endereço de memória, com tamanho ajustado;*/
 Produtos* fRealocaProdutos (int novoTamanho, Produtos *produto){
     Produtos *retornaRealloc = (Produtos *) realloc(produto, novoTamanho*sizeof(Produtos));
     if (retornaRealloc == NULL)
@@ -70,6 +71,8 @@ void fCadastraProdutos (int tamanhoAtual, int inputUsuario,Produtos *novoProduto
         scanf("%f", &novoProduto[i].margemLucro);
         printf("Informe a quantidade em estoque\n");   
         scanf("%d", &novoProduto[i].qtdEstoque);
+        printf("Informe o estoque mínimo do produto\n"); 
+        scanf("%d", &novoProduto[i].qtdEstoqueMin);
     }
 }
 
@@ -78,23 +81,100 @@ não seja printado junto na exibição, quebrando o leiaute que já não é lá 
 tem uma condição para cada categoria para ficar bonitinho na tela apenas*/
 void fRetornaCadastrosProdutos (Produtos *produto, int tamanhoAlocado){    
     system("cls");
-    printf("%-8s %-19s %-20s %-10s %-16s %-20s\n","Código", "Nome", "Categoria", "Custo", "Margem de Lucro(%)", "Quantidade em Estoque"); 
+    printf("%-8s %-19s %-20s %-10s %-16s %-20s\n",
+            "Código", "Nome", "Categoria", "Custo", "Margem de Lucro(%)", "Quantidade em Estoque"); 
     for (int i = 0; i < tamanhoAlocado; i++) {
         if (produto[i].categoria== 1)
         {
-            printf("%-7d %-19s %-20s %-10.2f %-20.2f %-20d\n",  produto[i].codigoProduto, strtok(produto[i].nomeProduto,"\n"), fREtornaCategoria(produto[i].categoria), produto[i].custoProduto, produto[i].margemLucro, produto[i].qtdEstoque);
+            printf("%-7d %-19s %-20s %-10.2f %-20.2f %-20d\n",  
+            produto[i].codigoProduto, 
+            strtok(produto[i].nomeProduto,"\n"), 
+            fREtornaCategoria(produto[i].categoria), 
+            produto[i].custoProduto, 
+            produto[i].margemLucro, 
+            produto[i].qtdEstoque);
         }
         else if (produto[i].categoria==2)
         {
-            printf("%-7d %-20s %-20s %-10.2f %-20.2f %-20d\n",  produto[i].codigoProduto, strtok(produto[i].nomeProduto,"\n"), fREtornaCategoria(produto[i].categoria), produto[i].custoProduto, produto[i].margemLucro, produto[i].qtdEstoque);
+            printf("%-7d %-20s %-20s %-10.2f %-20.2f %-20d\n", 
+             produto[i].codigoProduto, 
+             strtok(produto[i].nomeProduto,"\n"), 
+             fREtornaCategoria(produto[i].categoria), 
+             produto[i].custoProduto, 
+             produto[i].margemLucro, 
+             produto[i].qtdEstoque);
         }
         else if (produto[i].categoria==3)
         {
-            printf("%-7d %-21s %-20s %-10.2f %-20.2f %-20d\n",  produto[i].codigoProduto, strtok(produto[i].nomeProduto,"\n"), fREtornaCategoria(produto[i].categoria), produto[i].custoProduto, produto[i].margemLucro, produto[i].qtdEstoque);
+            printf("%-7d %-21s %-20s %-10.2f %-20.2f %-20d\n", 
+             produto[i].codigoProduto,
+             strtok(produto[i].nomeProduto,"\n"), 
+             fREtornaCategoria(produto[i].categoria), 
+             produto[i].custoProduto, 
+             produto[i].margemLucro, 
+             produto[i].qtdEstoque);
         }      
     }
 }
 
 
+void fExibeProdutosTelaVenda (Produtos *produto, int tamanhoAlocado){    
+    system("cls");
+    printf("%-8s %-19s %-20s %-10s %-16s\n",
+            "Código", "Nome", "Categoria", "Preço Venda",  "Quantidade em Estoque"); 
+    for (int i = 0; i < tamanhoAlocado; i++) {
+        if (produto[i].categoria== 1)
+        {
+            printf("%-7d %-19s %-20s %-10.2f  %-20d\n",  
+            produto[i].codigoProduto, 
+            strtok(produto[i].nomeProduto,"\n"), 
+            fREtornaCategoria(produto[i].categoria), 
+            (produto[i].custoProduto+(produto[i].custoProduto * (produto[i].margemLucro/100))), 
+            produto[i].qtdEstoque);
+        }
+        else if (produto[i].categoria==2)
+        {
+            printf("%-7d %-20s %-20s %-10.2f %-20d\n", 
+             produto[i].codigoProduto, 
+             strtok(produto[i].nomeProduto,"\n"), 
+             fREtornaCategoria(produto[i].categoria), 
+            (produto[i].custoProduto+(produto[i].custoProduto * (produto[i].margemLucro/100))), 
+             produto[i].qtdEstoque);
+        }
+        else if (produto[i].categoria==3)
+        {
+            printf("%-7d %-21s %-20s %-10.2f %-20d\n", 
+             produto[i].codigoProduto,
+             strtok(produto[i].nomeProduto,"\n"), 
+             fREtornaCategoria(produto[i].categoria), 
+            (produto[i].custoProduto+(produto[i].custoProduto * (produto[i].margemLucro/100))), 
+             produto[i].qtdEstoque);
+        }      
+    }
+}
+
+char* fRetornaNomeProduto(int produto, int qtdProdutosCadastrados, Produtos* vListaProdutos){
+    
+    for (int i = 0; i < qtdProdutosCadastrados; i++)
+    {
+        if (vListaProdutos[i].codigoProduto == produto)
+        {
+            return vListaProdutos[i].nomeProduto;
+        }
+        
+    }
+    
+}
+/*funções idiotas porque não pode gravar o preço de venda do produto no cadastro*/
+float fRetornaPrecoVenda(int produto, int qtdProdutosCadastrados, Produtos* vListaProdutos){
+    for (int i = 0; i < qtdProdutosCadastrados; i++)
+    {
+        if (vListaProdutos[i].codigoProduto == produto)
+        {
+            return (vListaProdutos[i].custoProduto+(vListaProdutos[i].custoProduto * (vListaProdutos[i].margemLucro/100)));
+        }    
+    }
+    
+}
 
 #endif
