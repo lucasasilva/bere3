@@ -14,6 +14,8 @@ typedef struct
     float saldoDisponivelDinheiro;
     float vValorAberturaCaixa;
     float vSangriasdias;
+    float vValorPagodinheiroVendaAtual;
+    float vValorPagoCartaoVendaAtual;
 } SaldosVendas;
 
 
@@ -94,6 +96,16 @@ float fRetornaTotalVendaAtual(VendaAtual* vVenda, int vSequenciaMaxProduto){
         totalVendaAtual+=vVenda[i].valorTotalItem;   
     }
     return totalVendaAtual;
+}
+
+void fFechamentoCaixa(SaldosVendas *vSaldoVendas, int vIndiceVendas){
+    printf("Valor abertura caixa: %.2f\n",vSaldoVendas->vValorAberturaCaixa); 
+    printf("Quantidade de vendas do dia: %d\n",vIndiceVendas);
+    printf("Total venda cartões: %.2f\n",vSaldoVendas->totalVendaCartao); 
+    printf("Total vebda dinheiro: %.2f\n",vSaldoVendas->totalVendidoDia); 
+    printf("Total descontos ofertados: %.2f\n", vSaldoVendas->totalDescontos);
+    printf("Total geral vendas: %.2f\n",(vSaldoVendas->totalVendaCartao+vSaldoVendas->totalVendidoDia+vSaldoVendas->totalDescontos)); 
+    printf("Total sangrias dia: %.2f\n",vSaldoVendas->vSangriasdias);   
 }
 
 

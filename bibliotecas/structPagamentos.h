@@ -9,7 +9,6 @@ typedef struct
 {
     int codigoVenda;
     float valorTotalVenda;
-    char tipoPag[2];
     float vTotalPagoDinheiro;
     float vTotalPagoCartao;
 } HistoricoVendas;
@@ -32,6 +31,14 @@ HistoricoVendas* fAlocaMemoriaVendas(HistoricoVendas* Venda, int vIndiceVenda){
         printf("Falha ao alocar memoria\n"); 
         return NULL;
     }   
+}
+
+void fGravaVendasDia(int vIndiceVenda, HistoricoVendas* vVendasDia, SaldosVendas *vSaldosVendas, float *vDesconto){
+    vVendasDia[vIndiceVenda-1].codigoVenda = vIndiceVenda;
+    vVendasDia[vIndiceVenda-1].vTotalPagoCartao = vSaldosVendas->vValorPagoCartaoVendaAtual;
+    vVendasDia[vIndiceVenda-1].vTotalPagoDinheiro = vSaldosVendas->vValorPagodinheiroVendaAtual;
+    vVendasDia[vIndiceVenda-1].vTotalPagoDinheiro = (vSaldosVendas->vValorPagoCartaoVendaAtual+vSaldosVendas->vValorPagodinheiroVendaAtual+*vDesconto);
+
 }
 
 float fExibeDesconto(float vTotalVenda, float vPercDesconto){
@@ -57,14 +64,41 @@ void fMenuPagamento(float vTotalVenda){
     if (vTotalVenda<200)
     {
         printf("Lhe dá direito a um desconto de R$ %.2f (%d%%) para pagamento em dinheiro\n",fExibeDesconto(vTotalVenda,0),((vTotalVenda<50)?5:10)); 
+        printf("Totalizando: R$ %.2f\n", (vTotalVenda-fExibeDesconto(vTotalVenda,0))); 
     } else
     {
         printf("Lhe dá direito a um desconto(pagando em espécie), que será decidido pelo bom humor da dona!\nBoa sorte =)\n"); 
     }
     printf("As opções de pagamento são:\n"); 
     printf("1. Dinheiro\n"); 
-    printf("2. Cartão\n"); 
+    printf("2. Cartão\n");
+    printf("3. Sair\n");  
 }
-void fProcessaPagamentoDinheiro(){}
-void fProcessaPagamentoCartao(){}
+void fProcessaPagamentoDinheiro(float* vTotalVenda, SaldosVendas *vSaldosVendas, float *vDesconto, float *vTotalPago){
+    vSaldosVendas->totalVendidoDia+=*vTotalVenda;
+    *vTotalVenda -= (*vDesconto+*vTotalPago);
+    vSaldosVendas->saldoDisponivelDinheiro+=*vTotalPago;
+    vSaldosVendas->totalDescontos+=*vDesconto;
+    vSaldosVendas->totalVendaDinheiro+=*vTotalPago;
+    vSaldosVendas->vValorPagodinheiroVendaAtual+=*vTotalPago;
+}
+
+void fProcessaPagamentoCartao(float* vTotalVenda, SaldosVendas* vSaldosVendas, float vTotalPago){
+    vSaldosVendas->totalVendidoDia+=*vTotalVenda;
+    vSaldosVendas->totalVendaCartao+=vTotalPago;
+    vSaldosVendas->vValorPagoCartaoVendaAtual+=vTotalPago;
+}
+
+void fImprimeVendas(int vIndiceVendas, HistoricoVendas* vVendasDia){
+    printf("%-20s %-20s %-20s %-20s\n", 
+    "Código venda", "Total Dinheiro", "Total Cartão", "Total Venda");
+    for (int i = 0; i < vIndiceVendas; i++)
+    {
+        printf("%-20d %-20.2f %-20.2f %-20.2f\n",vVendasDia[i].codigoVenda,
+        vVendasDia[i].vTotalPagoDinheiro,
+        vVendasDia[i].vTotalPagoCartao,
+        vVendasDia[i].valorTotalVenda); 
+    }
+     
+}
 #endif

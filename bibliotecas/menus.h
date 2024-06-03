@@ -7,7 +7,7 @@
 /*----------------MENU PRINCIPAL-----------------------------------------------------*/
 void fMenuPrincipal()
 {
-    system("cls");
+    //system("cls");
     printf("==========================================\n");
     printf("============      BERE'S      ============\n");
     printf("==========================================\n");
@@ -79,7 +79,7 @@ void fMenuRelatorios()
     printf("== Escolha uma das opções de Relatórios ==\n");
     printf("== 1.   Produtos Cadastrados            ==\n");
     printf("== 2.   Clientes Cadastrados            ==\n");
-    printf("==                                      ==\n");
+    printf("== 3.   Vendas dia                      ==\n");
     printf("== 4.   Retornar ao menu principal      ==\n");
     printf("==                                      ==\n");
     printf("==                                      ==\n");
