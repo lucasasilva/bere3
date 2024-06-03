@@ -34,7 +34,7 @@ int main()
     char vValidaAberturaCaixa = 'N';
     char vContinuaCompra = 'S';
     char vStatusVenda = 'F'; // VERIFICA SE HÁ VENDA UMA VENDA EM ABERTO OU NÃO
-    SaldosVendas vsaldosVendas={0};
+    SaldosVendas vsaldosVendas = {0};
 
     Terceiros *cliente = (Terceiros *)calloc(vAlocacaoMemoriaCliente, sizeof(Terceiros));
     Produtos *produto = (Produtos *)calloc(vAlocacaoMemoriaProdutos, sizeof(Produtos));
@@ -145,30 +145,37 @@ int main()
 
                         printf("Qual produto deseja comprar ou 4 para sair: ");
                         scanf("%d", &vProduto);
+                        while (!fValidaProdutoCadastrado(vProduto, vAlocacaoMemoriaProdutos, produto))
+                        {
+                            printf("Produto não cadastrado, informe um produto válido da lista acima\n");
+                            scanf("%d", &vProduto);
+                            if (vProduto==4)
+                            break;
+                        }
+                        while (!fBloqueiaVendaEstoqueNegativoZerado(vProduto, vAlocacaoMemoriaProdutos , produto))
+                        {
+                            printf("Produto com estoque zerado, informe outro produto\n"); 
+                            scanf("%d", &vProduto);
+                            if (vProduto==4)
+                            break;
+                        }
                         if (vProduto == 4)
                         {
                             printf("Retornando ao menu principal\n");
                             system("pause");
                             break;
                         }
-                        while (!fValidaProdutoCadastrado(vProduto, vAlocacaoMemoriaProdutos, produto))
-                        {
-                            printf("Produto não cadastrado, informe um produto válido da lista acima\n");
-                            scanf("%d", &vProduto);
-                        }
+                        
                         printf("Qual a quantidade que deseja comprar: ");
                         scanf("%d", &vQuantidade);
+                        printf("Deseja continuar comprando? S/N\n");
+                        scanf(" %c", &vContinuaCompra);
+                        vIndiceProduto += 1;
                         vStatusVenda = 'A';
                         vVendaAtual = fAlocaMemoriaProdutos(vVendaAtual, vIndiceProduto); // Como foi colocada uma quantidade, agora sim aloca memória;
                         fRegistraprodutosVendaAtual(vProduto, vIndiceProduto, vAlocacaoMemoriaProdutos, vVendaAtual, vQuantidade, produto);
                         vTotalVendaAtual += fRetornaTotalVendaAtual(vVendaAtual, vIndiceProduto);
-                        printf("Deseja continuar comprando? S/N\n");
-                        scanf(" %c", &vContinuaCompra);
-                        if (toupper(vContinuaCompra) == 'S')
-                        {
-                            // Se a pessoa escolhe continuar comprando, atualiza o índice do produto para que os produtos, nas chamadas acima, possam ser atualizados corretamente
-                            vIndiceProduto += 1;
-                        }
+                        fDeduzQtdEstoque(produto, vQuantidade, vProduto, vAlocacaoMemoriaProdutos);
 
                     } while (toupper(vContinuaCompra) != 'N');
                     break;
@@ -214,6 +221,8 @@ int main()
                     fExibeTotaisVendaAtual(vIndiceProduto, vAlocacaoMemoriaProdutos, vVendaAtual, produto);
                     fMenuPagamento(vTotalVendaAtual);
                     scanf("%d", &vMenu);
+                    printf("Qual valor deseja pagar?\n");
+                    scanf("%f", &vValorPagar);
                     switch (vMenu)
                     {
                     case 1:
@@ -230,26 +239,22 @@ int main()
                         {
                             vDesconto = fExibeDesconto(vTotalVendaAtual, 0);
                         }
-                        printf("Qual valor deseja pagar?\n");
-                        scanf("%f", &vValorPagar);
-                        if (vValorPagar>vTotalVendaAtual)//validação do troco
+                        if (vValorPagar > vTotalVendaAtual) // validação do troco
                         {
-                            if ((vValorPagar-vTotalVendaAtual)>vsaldosVendas.saldoDisponivelDinheiro)
+                            if ((vValorPagar - vTotalVendaAtual) > vsaldosVendas.saldoDisponivelDinheiro)
                             {
-                                printf("Saldo de %.2f insuficiente para o troco de %.2f\n",vsaldosVendas.saldoDisponivelDinheiro,(vValorPagar-vTotalVendaAtual)); 
-                            }else
+                                printf("Saldo de %.2f insuficiente para o troco de %.2f\n", vsaldosVendas.saldoDisponivelDinheiro, (vValorPagar - (vTotalVendaAtual-vDesconto)));
+                                system("pause");
+                            }
+                            else
                             {
-                                printf("Troco de : R$ %.2f\n",(vValorPagar-vTotalVendaAtual)); 
-                            }    
+                                printf("Troco de : R$ %.2f\n", (vValorPagar - (vTotalVendaAtual-vDesconto)));
+                                system("pause");
+                            }
                         }
-                        
-                        fProcessaPagamentoDinheiro(&vTotalVendaAtual, &vsaldosVendas, &vDesconto,&vValorPagar);
-                        printf("vocë chegou aqui %f\n", vTotalVendaAtual);
-                        system("pause");
+                        fProcessaPagamentoDinheiro(&vTotalVendaAtual, &vsaldosVendas, &vDesconto, &vValorPagar);
                         if (vTotalVendaAtual <= 0)
                         {
-                            printf("você chegou aqui 2\n");
-                            system("pause");
                             vIndiceVenda += 1;
                             vVendasDia = fAlocaMemoriaVendas(vVendasDia, vIndiceVenda);
                             fGravaVendasDia(vIndiceVenda, vVendasDia, &vsaldosVendas, &vDesconto);
@@ -262,11 +267,17 @@ int main()
                         }
                         break;
                     case 2:
+                        while (vValorPagar > vTotalVendaAtual)
+                        {
+                            printf("Valor maio que o devido para forma de pagamento cartão, informe novamente\n"); 
+                            scanf("%f", &vValorPagar);
+                        }
+                        
                         printf("Cartão foi autorizado?\n");
                         scanf(" %c", &vContinuaCompra);
                         if (toupper(vContinuaCompra) == 'S')
                         {
-                            fProcessaPagamentoCartao(&vTotalVendaAtual, &vsaldosVendas, vValorPagar);
+                            fProcessaPagamentoCartao(&vTotalVendaAtual, &vsaldosVendas, &vValorPagar);
                         }
                         else
                         {
