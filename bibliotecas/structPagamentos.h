@@ -37,7 +37,7 @@ void fGravaVendasDia(int vIndiceVenda, HistoricoVendas* vVendasDia, SaldosVendas
     vVendasDia[vIndiceVenda-1].codigoVenda = vIndiceVenda;
     vVendasDia[vIndiceVenda-1].vTotalPagoCartao = vSaldosVendas->vValorPagoCartaoVendaAtual;
     vVendasDia[vIndiceVenda-1].vTotalPagoDinheiro = vSaldosVendas->vValorPagodinheiroVendaAtual;
-    vVendasDia[vIndiceVenda-1].vTotalPagoDinheiro = (vSaldosVendas->vValorPagoCartaoVendaAtual+vSaldosVendas->vValorPagodinheiroVendaAtual+*vDesconto);
+    vVendasDia[vIndiceVenda-1].valorTotalVenda = (vSaldosVendas->vValorPagoCartaoVendaAtual+vSaldosVendas->vValorPagodinheiroVendaAtual+*vDesconto);
 
 }
 
@@ -75,30 +75,50 @@ void fMenuPagamento(float vTotalVenda){
     printf("3. Sair\n");  
 }
 void fProcessaPagamentoDinheiro(float* vTotalVenda, SaldosVendas *vSaldosVendas, float *vDesconto, float *vTotalPago){
+    /*Para não ter que lidar com isso na main. Se o total pago for maior que o total devido, para fim dos cálculos,
+    interpreta-se que a venda foi totalmente quitada.*/
+    if (vTotalPago > vTotalVenda)
+    {
+        *vTotalPago = *vTotalVenda;
+    }
+    
     vSaldosVendas->totalVendidoDia+=*vTotalVenda;
     *vTotalVenda -= (*vDesconto+*vTotalPago);
     vSaldosVendas->saldoDisponivelDinheiro+=*vTotalPago;
     vSaldosVendas->totalDescontos+=*vDesconto;
-    vSaldosVendas->totalVendaDinheiro+=*vTotalPago;
+    vSaldosVendas->totalVendaDinheiro+=*vTotalPago-*vDesconto;
     vSaldosVendas->vValorPagodinheiroVendaAtual+=*vTotalPago;
 }
 
-void fProcessaPagamentoCartao(float* vTotalVenda, SaldosVendas* vSaldosVendas, float vTotalPago){
+void fProcessaPagamentoCartao(float* vTotalVenda, SaldosVendas* vSaldosVendas, float *vTotalPago){
     vSaldosVendas->totalVendidoDia+=*vTotalVenda;
-    vSaldosVendas->totalVendaCartao+=vTotalPago;
-    vSaldosVendas->vValorPagoCartaoVendaAtual+=vTotalPago;
+    vSaldosVendas->totalVendaCartao+=*vTotalPago;
+    vSaldosVendas->vValorPagoCartaoVendaAtual+=*vTotalPago;
 }
 
 void fImprimeVendas(int vIndiceVendas, HistoricoVendas* vVendasDia){
+    system("cls");
     printf("%-20s %-20s %-20s %-20s\n", 
     "Código venda", "Total Dinheiro", "Total Cartão", "Total Venda");
     for (int i = 0; i < vIndiceVendas; i++)
     {
-        printf("%-20d %-20.2f %-20.2f %-20.2f\n",vVendasDia[i].codigoVenda,
+        printf("%-20d %-20.2f %-20.2f %-20.2f\n",
+        vVendasDia[i].codigoVenda,
         vVendasDia[i].vTotalPagoDinheiro,
         vVendasDia[i].vTotalPagoCartao,
         vVendasDia[i].valorTotalVenda); 
     }
      
 }
+
+void fFechamentoCaixa(SaldosVendas *vSaldoVendas, int vIndiceVendas){
+    printf("Valor abertura caixa: %.2f\n",vSaldoVendas->vValorAberturaCaixa); 
+    printf("Quantidade de vendas do dia: %d\n",vIndiceVendas);
+    printf("Total venda cartões: %.2f\n",vSaldoVendas->totalVendaCartao); 
+    printf("Total vebda dinheiro: %.2f\n",vSaldoVendas->totalVendidoDia); 
+    printf("Total descontos ofertados: %.2f\n", vSaldoVendas->totalDescontos);
+    printf("Total geral vendas: %.2f\n",(vSaldoVendas->totalVendaCartao+vSaldoVendas->totalVendidoDia+vSaldoVendas->totalDescontos)); 
+    printf("Total sangrias dia: %.2f\n",vSaldoVendas->vSangriasdias);   
+}
+
 #endif
