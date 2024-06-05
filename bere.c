@@ -40,7 +40,7 @@ int main()
     Produtos *produto = (Produtos *)calloc(vAlocacaoMemoriaProdutos, sizeof(Produtos));
     VendaAtual *vVendaAtual = NULL; // Commo a pessoa pode entrar na tela mas NÃO escolher nada, melhor não alocar memória e nem deixar o ponteiro locaço, apontando para qualquer coisa
     HistoricoVendas *vVendasDia = NULL;
-
+    
     /*Produtos demonstração;*/
     produto[0].codigoProduto = 1000;
     strcpy(produto[0].nomeProduto, "Detergente");
@@ -145,6 +145,12 @@ int main()
 
                         printf("Qual produto deseja comprar ou 4 para sair: ");
                         scanf("%d", &vProduto);
+                        if (vProduto == 4)
+                        {
+                            printf("Retornando ao menu principal\n");
+                            system("pause");
+                            break;
+                        }
                         while (!fValidaProdutoCadastrado(vProduto, vAlocacaoMemoriaProdutos, produto))
                         {
                             printf("Produto não cadastrado, informe um produto válido da lista acima\n");
