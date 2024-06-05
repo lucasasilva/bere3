@@ -33,7 +33,7 @@ char* fREtornaCategoria(int categoria){
         return "Padaria";
         break;
     default:
-        return "Categoria não cadastrada";
+        return "Não cadastrada";
         break;
     }
 }

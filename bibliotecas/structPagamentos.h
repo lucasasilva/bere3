@@ -94,6 +94,8 @@ void fProcessaPagamentoCartao(float* vTotalVenda, SaldosVendas* vSaldosVendas, f
     vSaldosVendas->totalVendidoDia+=*vTotalVenda;
     vSaldosVendas->totalVendaCartao+=*vTotalPago;
     vSaldosVendas->vValorPagoCartaoVendaAtual+=*vTotalPago;
+    *vTotalVenda -= (*vTotalPago);
+
 }
 
 void fImprimeVendas(int vIndiceVendas, HistoricoVendas* vVendasDia){
