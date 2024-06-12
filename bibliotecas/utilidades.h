@@ -77,4 +77,15 @@ bool fValidaProdutoCadastrado(int produtoInput, int qtdProdutosCadastrados, Prod
     }
     return false;
 }
+
+/*Substitui system("pause")
+1. Não é boa prática;
+2. Pode quebrar gravação e ou leitura dos arquivos se isso for chamado 
+   na tela enquanto um arquivo está aberto, pois "pause" interrompe
+   a execução do programa;
+3. O comando não é reconhecido no computador do amiguinho que usa linux hehe :) */
+void fGetcharParaSubstituirPause(){
+    getchar();
+    getchar();
+}
 #endif

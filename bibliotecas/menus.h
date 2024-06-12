@@ -7,7 +7,7 @@
 /*----------------MENU PRINCIPAL-----------------------------------------------------*/
 void fMenuPrincipal()
 {
-    system("cls");
+    system("clear || cls");
     printf("==========================================\n");
     printf("============      BERE'S      ============\n");
     printf("==========================================\n");
@@ -26,7 +26,7 @@ void fMenuPrincipal()
 }
 void fMenuCadastros()
 {
-    system("cls");
+    system("clear || cls");
     printf("==========================================\n");
     printf("============      BERE'S      ============\n");
     printf("==========================================\n");
@@ -50,7 +50,7 @@ void fMenuCadastros()
 
 void fMenuVendas()
 {
-    system("cls");
+    system("clear || cls");
     printf("==========================================\n");
     printf("============      BERE'S      ============\n");
     printf("==========================================\n");
@@ -72,7 +72,7 @@ void fMenuVendas()
 
 void fMenuRelatorios()
 {
-    system("cls");
+    system("clear || cls");
     printf("==========================================\n");
     printf("============      BERE'S      ============\n");
     printf("==========================================\n");

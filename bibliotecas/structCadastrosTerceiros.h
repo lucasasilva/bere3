@@ -117,7 +117,7 @@ void fRetornaClientesCadastrados(Terceiros* cliente, int tamanhoAlocado) {
         /*Basicametne, se houve um erro no preenchimento, memória desalocada ou qualquer outra coisa que
         faça com que a variável criada acim a(que recebe a versão sem o \n) esteja como NULL, ele imprime uma 
         string vazia*/
-        printf("%-15d %-20s %-20s %-15s %-10s %-10s %-15s %-15s %-20s %-10d\n", 
+        printf("%-15d %-20s %-20s %-15s %-10s %-10s %-15s %-15s %-20s %-10s\n", 
                cliente[i].codigo, 
                nomeRegistro ? nomeRegistro : "", 
                nomeSocial ? nomeSocial : "", 

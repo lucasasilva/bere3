@@ -57,7 +57,7 @@ Produtos* fRealocaProdutos (int novoTamanho, Produtos *produto){
 void fCadastraProdutos (int tamanhoAtual, int inputUsuario,Produtos *novoProduto){
     for (int i = (tamanhoAtual-inputUsuario); i <(tamanhoAtual); i++)
     {
-        system("cls");
+        system("clear || cls");
         printf("Informe o código do novo produto\n"); 
         scanf("%d", &novoProduto[i].codigoProduto);
         getchar();
@@ -80,7 +80,7 @@ void fCadastraProdutos (int tamanhoAtual, int inputUsuario,Produtos *novoProduto
 não seja printado junto na exibição, quebrando o leiaute que já não é lá essa coca-cola toda.
 tem uma condição para cada categoria para ficar bonitinho na tela apenas*/
 void fRetornaCadastrosProdutos (Produtos *produto, int tamanhoAlocado){    
-    system("cls");
+    system("clear || cls");
     printf("%-8s %-19s %-20s %-10s %-16s %-20s\n",
             "Código", "Nome", "Categoria", "Custo", "Margem de Lucro(%)", "Quantidade em Estoque"); 
     for (int i = 0; i < tamanhoAlocado; i++) {
@@ -119,7 +119,7 @@ void fRetornaCadastrosProdutos (Produtos *produto, int tamanhoAlocado){
 
 
 void fExibeProdutosTelaVenda (Produtos *produto, int tamanhoAlocado){    
-    system("cls");
+    system("clear || cls");
     printf("%-8s %-19s %-20s %-10s %-16s\n",
             "Código", "Nome", "Categoria", "Preço Venda",  "Quantidade em Estoque"); 
     for (int i = 0; i < tamanhoAlocado; i++) {

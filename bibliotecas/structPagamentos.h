@@ -2,6 +2,7 @@
 #define structPagamentos_h
 
 #include "calculaTotaisVendas.h"
+#include "utilidades.h"
 
 
 /*Esta armazena a venda já fechada e possui um índice (códgo da venda) para ser consultada depois;*/
@@ -59,7 +60,7 @@ float fExibeDesconto(float vTotalVenda, float vPercDesconto){
     return vDesconto;   
 }
 void fMenuPagamento(float vTotalVenda){
-    system("cls");
+    system("clear || cls");
     printf("Compra no valor total de R$ %.2f\n",vTotalVenda); 
     if (vTotalVenda<200)
     {
@@ -99,7 +100,7 @@ void fProcessaPagamentoCartao(float* vTotalVenda, SaldosVendas* vSaldosVendas, f
 }
 
 void fImprimeVendas(int vIndiceVendas, HistoricoVendas* vVendasDia){
-    system("cls");
+    system("clear || cls");
     printf("%-20s %-20s %-20s %-20s\n", 
     "Código venda", "Total Dinheiro", "Total Cartão", "Total Venda");
     for (int i = 0; i < vIndiceVendas; i++)
@@ -110,7 +111,7 @@ void fImprimeVendas(int vIndiceVendas, HistoricoVendas* vVendasDia){
         vVendasDia[i].vTotalPagoCartao,
         vVendasDia[i].valorTotalVenda); 
     }
-     
+    
 }
 
 void fFechamentoCaixa(SaldosVendas *vSaldoVendas, int vIndiceVendas){
