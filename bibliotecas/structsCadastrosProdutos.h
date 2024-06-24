@@ -15,6 +15,7 @@ typedef struct
     float margemLucro;
     int qtdEstoque;
     int qtdEstoqueMin;
+    char statusItem;
 } Produtos;
 
 
@@ -54,7 +55,7 @@ Produtos* fRealocaProdutos (int novoTamanho, Produtos *produto){
 
 
 /*"cadastra" os produtos no espaço de memória alocada*/
-void fCadastraProdutos (int tamanhoAtual, int inputUsuario,Produtos *novoProduto){
+void fCadastraProdutos (int tamanhoAtual, int inputUsuario,Produtos *novoProduto, FILE *arquivoProduto){
     for (int i = (tamanhoAtual-inputUsuario); i <(tamanhoAtual); i++)
     {
         system("clear || cls");
@@ -63,6 +64,7 @@ void fCadastraProdutos (int tamanhoAtual, int inputUsuario,Produtos *novoProduto
         getchar();
         printf("Informe o nome do produtos\n"); 
         fgets(novoProduto[i].nomeProduto,80,stdin);
+        novoProduto[i].nomeProduto[strcspn(novoProduto[i].nomeProduto, "\n")] = '\0';
         printf("Informe a categoria:\n1. Material de Limpeza\t2. Alimentos e Bebidas\t3. Padaria\n"); 
         scanf("%d", &novoProduto[i].categoria);
         printf("Informe o custo do produto\n"); 
@@ -73,6 +75,24 @@ void fCadastraProdutos (int tamanhoAtual, int inputUsuario,Produtos *novoProduto
         scanf("%d", &novoProduto[i].qtdEstoque);
         printf("Informe o estoque mínimo do produto\n"); 
         scanf("%d", &novoProduto[i].qtdEstoqueMin);
+        novoProduto[i].statusItem = "S";
+
+        /*Gravação dos produtos no arquivo*/
+        arquivoProduto = fopen("./data/Produtos.csv", "a");
+        if (arquivoProduto == NULL) {
+        perror("Erro ao abrir o arquivo");
+        return;
+    }
+        fprintf(arquivoProduto,"%d,%s,%d,%.2f,%.2f,%d,%d,%c\n",
+        novoProduto[i].codigoProduto,
+        novoProduto[i].nomeProduto,
+        novoProduto[i].categoria,
+        novoProduto[i].custoProduto,
+        novoProduto[i].margemLucro,
+        novoProduto[i].qtdEstoque,
+        novoProduto[i].qtdEstoqueMin,
+        novoProduto[i].statusItem);
+        fclose(arquivoProduto);
     }
 }
 
