@@ -88,4 +88,23 @@ void fGetcharParaSubstituirPause(){
     getchar();
     getchar();
 }
+
+
+
+void* fAlocaMemoria (void* vPonteiro, int vTotalAlocar, size_t vTamanhoaAlocar){
+    if (vTotalAlocar ==1)
+    {
+        vPonteiro = calloc(1, vTamanhoaAlocar);
+        return vPonteiro;
+    } else if (vTotalAlocar >1)
+    {
+        vPonteiro = realloc(vPonteiro, ((vTotalAlocar) * vTamanhoaAlocar));
+        return vPonteiro;
+    }  else
+    {
+        return NULL;
+    }
+     
+}
+
 #endif
