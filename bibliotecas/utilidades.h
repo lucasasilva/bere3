@@ -107,4 +107,41 @@ void* fAlocaMemoria (void* vPonteiro, int vTotalAlocar, size_t vTamanhoaAlocar){
      
 }
 
+
+int fRetornaQTDItensArquivo(int vLinhasLidas, FILE *fptr)
+{
+    int vColunasLidas = 0;
+    Produtos *produto;
+    fptr = fopen("./data/Produtos.csv", "r");
+    if (fptr == NULL)
+    {
+        perror("Erro ao abrir o arquivo");
+        return 1;
+    }
+    do
+    {
+        produto = (Produtos *)fAlocaMemoria(produto, vLinhasLidas + 1, sizeof(Produtos));
+        vColunasLidas = fscanf(fptr, "%d, %79[^,],%d, %f, %f, %d,%d,%c",
+                               &produto[vLinhasLidas].codigoProduto,
+                               produto[vLinhasLidas].nomeProduto,
+                               &produto[vLinhasLidas].categoria,
+                               &produto[vLinhasLidas].custoProduto,
+                               &produto[vLinhasLidas].margemLucro,
+                               &produto[vLinhasLidas].qtdEstoque,
+                               &produto[vLinhasLidas].qtdEstoqueMin,
+                               &produto[vLinhasLidas].statusItem);
+        if (vColunasLidas != 8 && !feof(fptr))
+        {
+            printf("Erro de formatação do arquivo na linha %d - Coluna %d\n", (vLinhasLidas + 1), vColunasLidas);
+            free(produto);
+            produto = NULL;
+            return 1;
+        }
+        if (vColunasLidas == 8)
+        {
+            vLinhasLidas++;
+        }
+    } while (!feof(fptr));
+    return vLinhasLidas;
+}
 #endif

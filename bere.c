@@ -12,6 +12,8 @@
 
 int main()
 {
+    FILE* fptrprod = NULL;
+    FILE* fptrterc = NULL;
     system("chcp 65001"); // Muda a págica de código dos consoles para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
     int vMenu;
     int vInputUsuario;
@@ -22,7 +24,7 @@ int main()
     não permite o rastreio de quantos bytes uma variável tem alocada em memória.*/
     int vAlocacaoMemoriaCliente = 0;
     int vAlocacaoMemoriaVendas = 0;
-    int vAlocacaoMemoriaProdutos = 3; // alocando espaço para 3 produtos, porque é o que teremos visível para teste
+    int vAlocacaoMemoriaProdutos = fRetornaQTDItensArquivo(0,fptrprod); // alocando espaço para 3 produtos, porque é o que teremos visível para teste
 
     int vIndiceVenda = 0;   // indice das vendas armazenadas no dia. Pensem isso como um "generator".
     int vIndiceProduto = 0; // seve para adicionarmos mais itens a venda;
@@ -35,17 +37,18 @@ int main()
     char vContinuaCompra = 'S';
     char vStatusVenda = 'F'; // VERIFICA SE HÁ VENDA UMA VENDA EM ABERTO OU NÃO
 
-    FILE* fptrprod = NULL;
-    FILE* fptrterc = NULL;
     Terceiros *cliente = NULL;
-    Produtos *produto = NULL;
+    Produtos *produto = fAlocaMemoria(produto, vAlocacaoMemoriaProdutos,sizeof(Produtos));
+    fAlocaProdutosLidosArquivo(produto, fptrprod);
     VendaAtual *vVendaAtual = NULL; // Commo a pessoa pode entrar na tela mas NÃO escolher nada, melhor não alocar memória e nem deixar o ponteiro locaço, apontando para qualquer coisa
     HistoricoVendas *vVendasDia = NULL;
     SaldosVendas vsaldosVendas = {0};
     
+    
     /*Produtos demonstração;*/
 
     fMenuPrincipal();
+    printf("Produto %d\n",produto[0].codigoProduto); 
     scanf("%d", &vMenu);
 
     do
