@@ -12,6 +12,8 @@
 
 int main()
 {
+    FILE* fptrprod = NULL;
+    FILE* fptrterc = NULL;
     system("chcp 65001"); // Muda a págica de código dos consoles para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
     int vMenu;
     int vInputUsuario;
@@ -22,7 +24,7 @@ int main()
     não permite o rastreio de quantos bytes uma variável tem alocada em memória.*/
     int vAlocacaoMemoriaCliente = 0;
     int vAlocacaoMemoriaVendas = 0;
-    int vAlocacaoMemoriaProdutos = 3; // alocando espaço para 3 produtos, porque é o que teremos visível para teste
+    int vAlocacaoMemoriaProdutos = fRetornaQTDItensArquivo(0,fptrprod); // alocando espaço para 3 produtos, porque é o que teremos visível para teste
 
     int vIndiceVenda = 0;   // indice das vendas armazenadas no dia. Pensem isso como um "generator".
     int vIndiceProduto = 0; // seve para adicionarmos mais itens a venda;
@@ -34,36 +36,19 @@ int main()
     char vValidaAberturaCaixa = 'N';
     char vContinuaCompra = 'S';
     char vStatusVenda = 'F'; // VERIFICA SE HÁ VENDA UMA VENDA EM ABERTO OU NÃO
-    SaldosVendas vsaldosVendas = {0};
 
-    Terceiros *cliente = (Terceiros *)calloc(vAlocacaoMemoriaCliente, sizeof(Terceiros));
-    Produtos *produto = (Produtos *)calloc(vAlocacaoMemoriaProdutos, sizeof(Produtos));
+    Terceiros *cliente = NULL;
+    Produtos *produto = fAlocaMemoria(produto, vAlocacaoMemoriaProdutos,sizeof(Produtos));
+    fAlocaProdutosLidosArquivo(produto, fptrprod);
     VendaAtual *vVendaAtual = NULL; // Commo a pessoa pode entrar na tela mas NÃO escolher nada, melhor não alocar memória e nem deixar o ponteiro locaço, apontando para qualquer coisa
     HistoricoVendas *vVendasDia = NULL;
+    SaldosVendas vsaldosVendas = {0};
+    
     
     /*Produtos demonstração;*/
-    produto[0].codigoProduto = 1000;
-    strcpy(produto[0].nomeProduto, "Detergente");
-    produto[0].categoria = 1;
-    produto[0].custoProduto = 01.20;
-    produto[0].margemLucro = 62.50;
-    produto[0].qtdEstoque = 0;
-
-    produto[1].codigoProduto = 1001;
-    strcpy(produto[1].nomeProduto, "Café");
-    produto[1].categoria = 2;
-    produto[1].custoProduto = 14.80;
-    produto[1].margemLucro = 40.00;
-    produto[1].qtdEstoque = 5;
-
-    produto[2].codigoProduto = 1002;
-    strcpy(produto[2].nomeProduto, "Pão Francês");
-    produto[2].categoria = 3;
-    produto[2].custoProduto = 00.80;
-    produto[2].margemLucro = 80.00;
-    produto[2].qtdEstoque = 10;
 
     fMenuPrincipal();
+    printf("Produto %d\n",produto[0].codigoProduto); 
     scanf("%d", &vMenu);
 
     do
@@ -78,7 +63,7 @@ int main()
                 if (vMenu == 3)
                 {
                     printf("Retornando ao menu principal\n");
-                    system("pause");
+                    fGetcharParaSubstituirPause();
                     break;
                 }
                 if (vMenu == 1) // produtos
@@ -86,10 +71,10 @@ int main()
                     printf("Quantos produtos deseja cadastrar?\n");
                     scanf("%d", &vInputUsuario);
                     vAlocacaoMemoriaProdutos += vInputUsuario;
-                    produto = fRealocaProdutos((vAlocacaoMemoriaProdutos), produto);
-                    fCadastraProdutos(vAlocacaoMemoriaProdutos, vInputUsuario, produto);
+                    produto = (Produtos*) fAlocaMemoria(produto, vAlocacaoMemoriaProdutos, sizeof(Produtos));
+                    fCadastraProdutos(vAlocacaoMemoriaProdutos, vInputUsuario, produto, fptrprod);
                     printf("Retornando ao menu!\n");
-                    system("pause");
+                    fGetcharParaSubstituirPause();
                 }
                 else if (vMenu == 2) // clientes
                 {
@@ -99,7 +84,7 @@ int main()
                     cliente = fRealocaClientes((vAlocacaoMemoriaCliente), cliente);
                     fCadastraClientes(vAlocacaoMemoriaCliente, vInputUsuario, cliente);
                     printf("Retornando ao menu\n");
-                    system("pause");
+                    fGetcharParaSubstituirPause();
                 }
                 else if ((vMenu != 1 || vMenu != 2 || vMenu != 3))
                 {
@@ -113,13 +98,13 @@ int main()
             if (toupper(vValidaAberturaCaixa) == 'N')
             {
                 printf("por gentileza abra o caixa!\n");
-                system("pause");
+                fGetcharParaSubstituirPause();
                 break;
             }
             if (toupper(vStatusVenda) == 'E')
             {
                 printf("Venda em fechamento! Não é possível adicionar novos itens\n");
-                system("pause");
+                fGetcharParaSubstituirPause();
                 break;
             }
             do
@@ -148,7 +133,7 @@ int main()
                         if (vProduto == 4)
                         {
                             printf("Retornando ao menu principal\n");
-                            system("pause");
+                            fGetcharParaSubstituirPause();
                             break;
                         }
                         while (!fValidaProdutoCadastrado(vProduto, vAlocacaoMemoriaProdutos, produto))
@@ -168,7 +153,7 @@ int main()
                         if (vProduto == 4)
                         {
                             printf("Retornando ao menu principal\n");
-                            system("pause");
+                            fGetcharParaSubstituirPause();
                             break;
                         }
                         
@@ -189,7 +174,7 @@ int main()
                     if (toupper(vValidaAberturaCaixa) == 'N')
                     {
                         printf("por gentileza abra o caixa!\n");
-                        system("pause");
+                        fGetcharParaSubstituirPause();
                         break;
                     }
                     if (vsaldosVendas.saldoDisponivelDinheiro <= 50)
@@ -215,13 +200,13 @@ int main()
                     if (toupper(vValidaAberturaCaixa) == 'N')
                     {
                         printf("por gentileza abra o caixa!\n");
-                        system("pause");
+                        fGetcharParaSubstituirPause();
                         break;
                     }
                     if (vStatusVenda == 'F')
                     {
                         printf("Não há uma venda aberta no momento!\n");
-                        system("pause");
+                        fGetcharParaSubstituirPause();
                         break;
                     }
                     fExibeTotaisVendaAtual(vIndiceProduto, vAlocacaoMemoriaProdutos, vVendaAtual, produto);
@@ -250,12 +235,12 @@ int main()
                             if ((vValorPagar - vTotalVendaAtual) > vsaldosVendas.saldoDisponivelDinheiro)
                             {
                                 printf("Saldo de %.2f insuficiente para o troco de %.2f\n", vsaldosVendas.saldoDisponivelDinheiro, (vValorPagar - (vTotalVendaAtual-vDesconto)));
-                                system("pause");
+                                fGetcharParaSubstituirPause();
                             }
                             else
                             {
                                 printf("Troco de : R$ %.2f\n", (vValorPagar - (vTotalVendaAtual-vDesconto)));
-                                system("pause");
+                                fGetcharParaSubstituirPause();
                             }
                         }
                         fProcessaPagamentoDinheiro(&vTotalVendaAtual, &vsaldosVendas, &vDesconto, &vValorPagar);
@@ -288,7 +273,7 @@ int main()
                         else
                         {
                             printf("Cartão não autorizado, retornando ao menu principal\n");
-                            system("pause");
+                            fGetcharParaSubstituirPause();
                             break;
                         }
 
@@ -307,7 +292,7 @@ int main()
                         break;
                     case 3:
                         printf("Retornando ao menu principal\n");
-                        system("pause");
+                        fGetcharParaSubstituirPause();
                         break;
                     default:
                         fMenuPagamento(vTotalVendaAtual);
@@ -317,7 +302,7 @@ int main()
                     break;
                 case 4:
                     printf("Retornando ao menu principal\n");
-                    system("pause");
+                    fGetcharParaSubstituirPause();
                     break;
                 default:
                     fMenuVendas();
@@ -331,7 +316,7 @@ int main()
             if (toupper(vValidaAberturaCaixa) == 'S')
             {
                 printf("Caixa já está aberto!\n");
-                system("pause");
+                fGetcharParaSubstituirPause();
                 break;
             }
             else
@@ -346,17 +331,17 @@ int main()
             if (toupper(vValidaAberturaCaixa) == 'N')
             {
                 printf("por gentileza abra o caixa!\n");
-                system("pause");
+                fGetcharParaSubstituirPause();
                 break;
             }
             if (vStatusVenda == 'A')
             {
                 printf("Há uma venda em aberto, proceda o fechamnto antes de fechar o caixa\n");
-                system("pause");
+                fGetcharParaSubstituirPause();
                 break;
             }
             fFechamentoCaixa(&vsaldosVendas, vIndiceVenda);
-            system("pause");
+            fGetcharParaSubstituirPause();
             vValidaAberturaCaixa = 'N';
             break;
         case 5: // Relatórios
@@ -369,22 +354,22 @@ int main()
                 {
                 case 1: // Relatório de produtos cadastrados
                     fRetornaCadastrosProdutos(produto, vAlocacaoMemoriaProdutos);
-                    system("pause");
+                    fGetcharParaSubstituirPause();
                     break;
 
                 case 2: // Relatório de clientes cadastrados
                     fRetornaClientesCadastrados(cliente, vAlocacaoMemoriaCliente);
-                    system("pause");
+                    fGetcharParaSubstituirPause();
                     break;
 
                 case 3: // Relatório de vendas do dia
                     fImprimeVendas(vIndiceVenda, vVendasDia);
-                    system("pause");
+                    fGetcharParaSubstituirPause();
                     break;
 
                 case 4: // Escolheu sair
                     printf("Retornando ao menu principal\n");
-                    system("pause");
+                    fGetcharParaSubstituirPause();
                     break;
 
                 default: // Opção inválida

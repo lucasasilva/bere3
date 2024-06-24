@@ -77,4 +77,73 @@ bool fValidaProdutoCadastrado(int produtoInput, int qtdProdutosCadastrados, Prod
     }
     return false;
 }
+
+/*Substitui system("pause")
+1. Não é boa prática;
+2. Pode quebrar gravação e ou leitura dos arquivos se isso for chamado 
+   na tela enquanto um arquivo está aberto, pois "pause" interrompe
+   a execução do programa;
+3. O comando não é reconhecido no computador do amiguinho que usa linux hehe :) */
+void fGetcharParaSubstituirPause(){
+    getchar();
+    getchar();
+}
+
+
+
+void* fAlocaMemoria (void* vPonteiro, int vTotalAlocar, size_t vTamanhoaAlocar){
+    if (vTotalAlocar ==1)
+    {
+        vPonteiro = calloc(1, vTamanhoaAlocar);
+        return vPonteiro;
+    } else if (vTotalAlocar >1)
+    {
+        vPonteiro = realloc(vPonteiro, ((vTotalAlocar) * vTamanhoaAlocar));
+        return vPonteiro;
+    }  else
+    {
+        return NULL;
+    }
+     
+}
+
+/*Retorna a quantidade de itens dentro do arquivo
+para usar este valor e alocar espaço o suficiente para o ponteiro que guardará os produtos*/
+int fRetornaQTDItensArquivo(int vLinhasLidas, FILE *fptr)
+{
+    int vColunasLidas = 0;
+    Produtos *produto;
+    fptr = fopen("./data/Produtos.csv", "r");
+    if (fptr == NULL)
+    {
+        perror("Erro ao abrir o arquivo");
+        return 1;
+    }
+    do
+    {
+        produto = (Produtos *)fAlocaMemoria(produto, vLinhasLidas + 1, sizeof(Produtos));
+        vColunasLidas = fscanf(fptr, "%d, %79[^,],%d, %f, %f, %d,%d,%c",
+                               &produto[vLinhasLidas].codigoProduto,
+                               produto[vLinhasLidas].nomeProduto,
+                               &produto[vLinhasLidas].categoria,
+                               &produto[vLinhasLidas].custoProduto,
+                               &produto[vLinhasLidas].margemLucro,
+                               &produto[vLinhasLidas].qtdEstoque,
+                               &produto[vLinhasLidas].qtdEstoqueMin,
+                               &produto[vLinhasLidas].statusItem);
+        if (vColunasLidas != 8 && !feof(fptr))
+        {
+            printf("Erro de formatação do arquivo na linha %d - Coluna %d\n", (vLinhasLidas + 1), vColunasLidas);
+            free(produto);
+            produto = NULL;
+            return 1;
+        }
+        if (vColunasLidas == 8)
+        {
+            vLinhasLidas++;
+        }
+    } while (!feof(fptr));
+    fclose(fptr);
+    return vLinhasLidas;
+}
 #endif
