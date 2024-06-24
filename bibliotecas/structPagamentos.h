@@ -87,7 +87,7 @@ void fProcessaPagamentoDinheiro(float* vTotalVenda, SaldosVendas *vSaldosVendas,
     *vTotalVenda -= (*vDesconto+*vTotalPago);
     vSaldosVendas->saldoDisponivelDinheiro+=*vTotalPago;
     vSaldosVendas->totalDescontos+=*vDesconto;
-    vSaldosVendas->totalVendaDinheiro+=*vTotalPago-*vDesconto;
+    vSaldosVendas->totalVendaDinheiro+=*vTotalPago;
     vSaldosVendas->vValorPagodinheiroVendaAtual+=*vTotalPago;
 }
 
@@ -115,12 +115,13 @@ void fImprimeVendas(int vIndiceVendas, HistoricoVendas* vVendasDia){
 }
 
 void fFechamentoCaixa(SaldosVendas *vSaldoVendas, int vIndiceVendas){
+    system("clear || cls");
     printf("Valor abertura caixa: %.2f\n",vSaldoVendas->vValorAberturaCaixa); 
     printf("Quantidade de vendas do dia: %d\n",vIndiceVendas);
     printf("Total venda cartões: %.2f\n",vSaldoVendas->totalVendaCartao); 
-    printf("Total vebda dinheiro: %.2f\n",vSaldoVendas->totalVendidoDia); 
+    printf("Total venda dinheiro: %.2f\n",vSaldoVendas->totalVendaDinheiro); 
     printf("Total descontos ofertados: %.2f\n", vSaldoVendas->totalDescontos);
-    printf("Total geral vendas: %.2f\n",(vSaldoVendas->totalVendaCartao+vSaldoVendas->totalVendidoDia+vSaldoVendas->totalDescontos)); 
+    printf("Total geral vendas: %.2f\n",vSaldoVendas->totalVendidoDia); 
     printf("Total sangrias dia: %.2f\n",vSaldoVendas->vSangriasdias);   
 }
 

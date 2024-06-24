@@ -83,7 +83,7 @@ void fAlocaProdutosLidosArquivo(Produtos *produto,  FILE *fptr)
             printf("Erro de formatação do arquivo na linha %d - Coluna %d\n", (vLinhasLidas + 1), vColunasLidas);
             free(produto);
             produto = NULL;
-            return 1;
+            exit(1);
         }
         if (vColunasLidas == 8)
         {

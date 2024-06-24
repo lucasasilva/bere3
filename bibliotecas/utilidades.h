@@ -107,7 +107,8 @@ void* fAlocaMemoria (void* vPonteiro, int vTotalAlocar, size_t vTamanhoaAlocar){
      
 }
 
-
+/*Retorna a quantidade de itens dentro do arquivo
+para usar este valor e alocar espaço o suficiente para o ponteiro que guardará os produtos*/
 int fRetornaQTDItensArquivo(int vLinhasLidas, FILE *fptr)
 {
     int vColunasLidas = 0;
@@ -142,6 +143,7 @@ int fRetornaQTDItensArquivo(int vLinhasLidas, FILE *fptr)
             vLinhasLidas++;
         }
     } while (!feof(fptr));
+    fclose(fptr);
     return vLinhasLidas;
 }
 #endif
