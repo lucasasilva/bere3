@@ -24,7 +24,7 @@ int main()
     não permite o rastreio de quantos bytes uma variável tem alocada em memória.*/
     int vAlocacaoMemoriaCliente = 0;
     int vAlocacaoMemoriaVendas = 0;
-    int vAlocacaoMemoriaProdutos = fRetornaQTDItensArquivo(0,fptrprod); // alocando espaço para 3 produtos, porque é o que teremos visível para teste
+    int vAlocacaoMemoriaProdutos = fRetornaQTDItensArquivo(0,fptrprod); //Percorre o arquivo de produtos e retorna a quantidade máxima de produtos cadastrados;
 
     int vIndiceVenda = 0;   // indice das vendas armazenadas no dia. Pensem isso como um "generator".
     int vIndiceProduto = 0; // seve para adicionarmos mais itens a venda;
@@ -35,11 +35,11 @@ int main()
     float vRetiradaCaixa;
     char vValidaAberturaCaixa = 'N';
     char vContinuaCompra = 'S';
-    char vStatusVenda = 'F'; // VERIFICA SE HÁ VENDA UMA VENDA EM ABERTO OU NÃO
+    char vStatusVenda = 'F'; //VERIFICA SE HÁ VENDA UMA VENDA EM ABERTO OU NÃO
 
     Terceiros *cliente = NULL;
-    Produtos *produto = fAlocaMemoria(produto, vAlocacaoMemoriaProdutos,sizeof(Produtos));
-    fAlocaProdutosLidosArquivo(produto, fptrprod);
+    Produtos *produto = fAlocaMemoria(produto, vAlocacaoMemoriaProdutos,sizeof(Produtos));//Aloca memória o suficiente para a quantidade de produtos previamente lida no arquivo
+    fAlocaProdutosLidosArquivo(produto, fptrprod);//Aloca, na memória, os produtos que estão dentro do arquivo.
     VendaAtual *vVendaAtual = NULL; // Commo a pessoa pode entrar na tela mas NÃO escolher nada, melhor não alocar memória e nem deixar o ponteiro locaço, apontando para qualquer coisa
     HistoricoVendas *vVendasDia = NULL;
     SaldosVendas vsaldosVendas = {0};
