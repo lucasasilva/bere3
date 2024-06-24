@@ -75,7 +75,7 @@ void fCadastraProdutos (int tamanhoAtual, int inputUsuario,Produtos *novoProduto
         scanf("%d", &novoProduto[i].qtdEstoque);
         printf("Informe o estoque mínimo do produto\n"); 
         scanf("%d", &novoProduto[i].qtdEstoqueMin);
-        novoProduto[i].statusItem = "S";
+        strcpy(&novoProduto[i].statusItem, "S");
 
         /*Gravação dos produtos no arquivo*/
         arquivoProduto = fopen("./data/Produtos.csv", "a");
