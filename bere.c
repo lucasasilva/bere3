@@ -398,9 +398,6 @@ int main()
         fMenuPrincipal();
         scanf("%d", &vMenu);
     } while (vMenu != 7);
-
-    printf("Deseja gravar os dados?\n");
-    scanf(" %c", &vContinuaCompra);
     printf("Obrigado por usar o deadlocks PDV!\n");
 
     free(cliente);
