@@ -172,7 +172,7 @@ int main()
                         vStatusVenda = 'A';
                         vVendaAtual = fAlocaMemoriaProdutos(vVendaAtual, vIndiceProduto); // Como foi colocada uma quantidade, agora sim aloca memória;
                         fRegistraprodutosVendaAtual(vProduto, vIndiceProduto, vAlocacaoMemoriaProdutos, vVendaAtual, vQuantidade, produto);
-                        vTotalVendaAtual += fRetornaTotalVendaAtual(vVendaAtual, vIndiceProduto);
+                        vTotalVendaAtual = fRetornaTotalVendaAtual(vVendaAtual, vIndiceProduto);
                         fDeduzQtdEstoque(produto, vQuantidade, vProduto, vAlocacaoMemoriaProdutos);
 
                     } while (toupper(vContinuaCompra) != 'N');
