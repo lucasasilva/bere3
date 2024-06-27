@@ -11,9 +11,13 @@
 #include "./bibliotecas/utilidades.h"
 
 int main()
-{
-    FILE* fptrprod = NULL;
-    FILE* fptrterc = NULL;
+{   
+    /*Porque linux usa / e windows usa \ como separador de pasta, vamos de variável global para não quebrar as chamadas
+    aí, em vossas máquinas, basta mudar os caminhos aqui (lembrando de usar \\) que vai dar bom*/
+    char vCaminhoArquivoProduto[100] = "./data/Produtos.csv";
+    char vCaminhoArquivoTerceiro[100] = {0};
+
+
     system("chcp 65001"); // Muda a págica de código dos consoles para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
     int vMenu;
     int vInputUsuario;
@@ -24,10 +28,12 @@ int main()
     não permite o rastreio de quantos bytes uma variável tem alocada em memória.*/
     int vAlocacaoMemoriaCliente = 0;
     int vAlocacaoMemoriaVendas = 0;
-    int vAlocacaoMemoriaProdutos = fRetornaQTDItensArquivo(0,fptrprod); //Percorre o arquivo de produtos e retorna a quantidade máxima de produtos cadastrados;
+    int vAlocacaoMemoriaProdutos = fRetornaQTDItensArquivo(0,vCaminhoArquivoProduto, "P"); //Percorre o arquivo de produtos e retorna a quantidade máxima de produtos cadastrados;
 
+    printf("valor %d\n",vAlocacaoMemoriaProdutos); 
     int vIndiceVenda = 0;   // indice das vendas armazenadas no dia. Pensem isso como um "generator".
     int vIndiceProduto = 0; // seve para adicionarmos mais itens a venda;
+
 
     float vDesconto = 0;
     float vPercDesconto;
@@ -38,17 +44,18 @@ int main()
     char vStatusVenda = 'F'; //VERIFICA SE HÁ VENDA UMA VENDA EM ABERTO OU NÃO
 
     Terceiros *cliente = NULL;
-    Produtos *produto = fAlocaMemoria(produto, vAlocacaoMemoriaProdutos,sizeof(Produtos));//Aloca memória o suficiente para a quantidade de produtos previamente lida no arquivo
-    fAlocaProdutosLidosArquivo(produto, fptrprod);//Aloca, na memória, os produtos que estão dentro do arquivo.
+    
+    Produtos *produto = NULL;
+    produto =(Produtos *)fAlocaMemoria(produto, vAlocacaoMemoriaProdutos,sizeof(Produtos));//Aloca memória o suficiente para a quantidade de produtos previamente lida no arquivo 
+    fAlocaProdutosLidosArquivo(produto, vCaminhoArquivoProduto);//Aloca, na memória, os produtos que estão dentro do arquivo.
+   
     VendaAtual *vVendaAtual = NULL; // Commo a pessoa pode entrar na tela mas NÃO escolher nada, melhor não alocar memória e nem deixar o ponteiro locaço, apontando para qualquer coisa
     HistoricoVendas *vVendasDia = NULL;
     SaldosVendas vsaldosVendas = {0};
     
-    
     /*Produtos demonstração;*/
 
     fMenuPrincipal();
-    printf("Produto %d\n",produto[0].codigoProduto); 
     scanf("%d", &vMenu);
 
     do
@@ -72,7 +79,7 @@ int main()
                     scanf("%d", &vInputUsuario);
                     vAlocacaoMemoriaProdutos += vInputUsuario;
                     produto = (Produtos*) fAlocaMemoria(produto, vAlocacaoMemoriaProdutos, sizeof(Produtos));
-                    fCadastraProdutos(vAlocacaoMemoriaProdutos, vInputUsuario, produto, fptrprod);
+                    fCadastraProdutos(vAlocacaoMemoriaProdutos, vInputUsuario, produto, vCaminhoArquivoProduto);
                     printf("Retornando ao menu!\n");
                     fGetcharParaSubstituirPause();
                 }

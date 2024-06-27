@@ -56,11 +56,11 @@ Produtos *fRealocaProdutos(int novoTamanho, Produtos *produto)
 }
 // lê os produtos de um arquivo e os aloca na memória;
 // Aceita como argumentos variável(ponteiro), o controlador de produtos alocados e ponteiro para arquivo de produtos;
-void fAlocaProdutosLidosArquivo(Produtos *produto,  FILE *fptr)
+void fAlocaProdutosLidosArquivo(Produtos *produto, char vCaminhoArquivoProduto[100])
 {
-    int vLinhasLidas= 0;
+     FILE *fptr = fopen(vCaminhoArquivoProduto, "r");
+    int vLinhasLidas = 0;
     int vColunasLidas = 0;
-    fptr = fopen("./data/Produtos.csv", "r");
     if (fptr == NULL)
     {
         perror("Erro ao abrir o arquivo");
@@ -68,6 +68,7 @@ void fAlocaProdutosLidosArquivo(Produtos *produto,  FILE *fptr)
     }
     do
     {
+        printf("chegou dentro da função\n"); 
         //produto = (Produtos *)fAlocaMemoria(produto, vLinhasLidas + 1, sizeof(Produtos));
         vColunasLidas = fscanf(fptr, "%d, %79[^,],%d, %f, %f, %d,%d,%c",
                                &produto[vLinhasLidas].codigoProduto,
@@ -78,6 +79,7 @@ void fAlocaProdutosLidosArquivo(Produtos *produto,  FILE *fptr)
                                &produto[vLinhasLidas].qtdEstoque,
                                &produto[vLinhasLidas].qtdEstoqueMin,
                                &produto[vLinhasLidas].statusItem);
+        printf("gravou o produto %d\n", vLinhasLidas); 
         if (vColunasLidas != 8 && !feof(fptr))
         {
             printf("Erro de formatação do arquivo na linha %d - Coluna %d\n", (vLinhasLidas + 1), vColunasLidas);
@@ -92,9 +94,16 @@ void fAlocaProdutosLidosArquivo(Produtos *produto,  FILE *fptr)
     } while (!feof(fptr));
 }
 
+
 /*"cadastra" os produtos no espaço de memória alocada*/
-void fCadastraProdutos(int tamanhoAtual, int inputUsuario, Produtos *novoProduto, FILE *arquivoProduto)
+void fCadastraProdutos(int tamanhoAtual, int inputUsuario, Produtos *novoProduto, char vCaminhoArquivoProduto[100])
 {
+    FILE *fptr = fopen(vCaminhoArquivoProduto, "a");
+    if (fptr == NULL)
+    {
+        perror("Erro ao abrir o arquivo");
+        return;
+    }
     for (int i = (tamanhoAtual - inputUsuario); i < (tamanhoAtual); i++)
     {
         system("clear || cls");
@@ -117,13 +126,8 @@ void fCadastraProdutos(int tamanhoAtual, int inputUsuario, Produtos *novoProduto
         strcpy(&novoProduto[i].statusItem, "S");
 
         /*Gravação dos produtos no arquivo*/
-        arquivoProduto = fopen("./data/Produtos.csv", "a");
-        if (arquivoProduto == NULL)
-        {
-            perror("Erro ao abrir o arquivo");
-            return;
-        }
-        fprintf(arquivoProduto, "%d,%s,%d,%.2f,%.2f,%d,%d,%c\n",
+
+        fprintf(fptr, "%d,%s,%d,%.2f,%.2f,%d,%d,%c\n",
                 novoProduto[i].codigoProduto,
                 novoProduto[i].nomeProduto,
                 novoProduto[i].categoria,
@@ -132,7 +136,7 @@ void fCadastraProdutos(int tamanhoAtual, int inputUsuario, Produtos *novoProduto
                 novoProduto[i].qtdEstoque,
                 novoProduto[i].qtdEstoqueMin,
                 novoProduto[i].statusItem);
-        fclose(arquivoProduto);
+        fclose(fptr);
     }
 }
 
