@@ -45,7 +45,7 @@ int main()
     char vStatusVenda = 'F'; //VERIFICA SE HÁ VENDA UMA VENDA EM ABERTO OU NÃO
 
     Terceiros *cliente = NULL;
-    cliente = (Terceiros *)fAlocaMemoria(cliente, vAlocacaoMemoriaCliente, sizeof(Terceiros));
+    cliente = (Terceiros *)fAlocaMemoria(cliente, vAlocacaoMemoriaCliente, sizeof(Terceiros)); 
     fAlocaTerceirosLidosArquivo(cliente, vCaminhoArquivoTerceiro);
 
     Produtos *produto = NULL; 
@@ -91,7 +91,7 @@ int main()
                     scanf("%d", &vInputUsuario);
                     getchar();
                     vAlocacaoMemoriaCliente += vInputUsuario;
-                    cliente = fRealocaClientes((vAlocacaoMemoriaCliente), cliente);
+                    cliente = (Terceiros*)fAlocaMemoria(cliente,vAlocacaoMemoriaCliente,sizeof(Terceiros));
                     fCadastraClientes(vAlocacaoMemoriaCliente, vInputUsuario, cliente, vCaminhoArquivoTerceiro);
                     printf("Retornando ao menu\n");
                     fGetcharParaSubstituirPause();

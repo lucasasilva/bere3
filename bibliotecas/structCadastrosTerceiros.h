@@ -30,11 +30,11 @@ typedef struct
 
 #include "utilidades.h"
 
-void fOrdenaClientes(Terceiros *cliente, int n) {
+void fOrdenaClientes(Terceiros *cliente, int vTotalClientesAlocados) {
     int i, j;
     Terceiros temp;
-    for (i = 0; i < n-1; i++) {
-        for (j = 0; j < n-i-1; j++) {
+    for (i = 0; i < vTotalClientesAlocados-1; i++) {
+        for (j = 0; j < vTotalClientesAlocados-i-1; j++) {
             if (cliente[j].nomeRegistro[0] > cliente[j+1].nomeRegistro[0]) {
                 temp = cliente[j];
                 cliente[j] = cliente[j+1];
@@ -66,7 +66,7 @@ void fAlocaTerceirosLidosArquivo(Terceiros *cliente, char* vCaminhoArquivoClient
     int vColunasLidas = 0;
     if (fptr == NULL)
     {
-        perror("Erro ao abrir o arquivo");
+        perror("Erro ao abrir o arquivo de terceiros");
         fGetcharParaSubstituirPause();
     }
     do 
@@ -85,7 +85,7 @@ void fAlocaTerceirosLidosArquivo(Terceiros *cliente, char* vCaminhoArquivoClient
                   cliente[vLinhasLidas].Endereco.ruaNumero) == 10;
         if (vColunasLidas != 10 && !feof(fptr))
         {
-            printf("Erro de formatação do arquivo na linha %d - Coluna %d\n", (vLinhasLidas + 1), vColunasLidas);
+            printf("Erro de formatação do arquivo de terceiros na linha %d - Coluna %d\n", (vLinhasLidas + 1), vColunasLidas);
             free(cliente);
             cliente = NULL;
             exit(1);
@@ -108,6 +108,7 @@ void fCadastraClientes (int tamanhoAtual, int inputUsuario, Terceiros *cliente, 
         system("clear || cls");
         printf("Entre com o código do novo cliente\n");
         fgets(temporaria, 150, stdin);
+        temporaria[strcspn(temporaria, "\n")] = '\0';
         sscanf(temporaria, "%d", &cliente[i].codigo); // Converte o código do cliente de char para integer
 
         printf("Entre com o nome de registro/batismo do novo cliente\n");
@@ -213,6 +214,7 @@ void fRetornaClientesCadastrados(Terceiros* cliente, int tamanhoAlocado) {
                rua ? rua : "", 
                cliente[i].Endereco.ruaNumero);
     }
+    fOrdenaClientes(cliente,tamanhoAlocado);
 }
 
 
@@ -224,14 +226,13 @@ int fRetornaQTDTercArquivo( char vCaminhoArquivo[100], char* vTipoArquivoProdTer
     Terceiros *cliente = NULL;
     if (fptr == NULL)
     {
-        perror("Erro ao abrir o arquivo");
+        perror("Erro ao abrir o arquivo de terceiros");
         return 1;
     }
     if (vTipoArquivoProdTerc == "T")
     {
         do
         {
-            printf("chegou aqui dentro\n"); 
             cliente = (Terceiros *)fAlocaMemoria(cliente, vLinhasLidas + 1, sizeof(Terceiros));
             vColunasLidas =  fscanf(fptr, "%d,%149[^,],%149[^,],%13[^,],%d,%19[^,],%49[^,],%49[^,],%99[^,],%19[^,\n]",
                   &cliente[vLinhasLidas].codigo,
