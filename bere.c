@@ -15,10 +15,10 @@ int main()
     /*Porque linux usa / e windows usa \ como separador de pasta, vamos de variável global para não quebrar as chamadas
     aí, em vossas máquinas, basta mudar os caminhos aqui (lembrando de usar \\) que vai dar bom*/
     char vCaminhoArquivoProduto[100] = "./data/Produtos.csv";
-    char vCaminhoArquivoTerceiro[100] = {0};
+    char vCaminhoArquivoTerceiro[100] = "./data/Terceiros.csv";
 
 
-    system("chcp 65001"); // Muda a págica de código dos consoles para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
+    system("chcp 65001"); // Muda a página de código dos consoles para UTF-8, fazendo com que o nosso idioma seja compreendido com seus acentos;
     int vMenu;
     int vInputUsuario;
     int vProduto, vQuantidade;
@@ -26,11 +26,12 @@ int main()
 
     /*Uma forma de manter controle sobre quanto temos alocado e quantos produtos temos "cadastrados", já que essa bosta dessa linguagem
     não permite o rastreio de quantos bytes uma variável tem alocada em memória.*/
-    int vAlocacaoMemoriaCliente = 0;
     int vAlocacaoMemoriaVendas = 0;
-    int vAlocacaoMemoriaProdutos = fRetornaQTDItensArquivo(0,vCaminhoArquivoProduto, "P"); //Percorre o arquivo de produtos e retorna a quantidade máxima de produtos cadastrados;
+    int vAlocacaoMemoriaCliente =fRetornaQTDTercArquivo(vCaminhoArquivoTerceiro, "T");
+    printf("qtd clientes lidos %d\n",vAlocacaoMemoriaCliente); 
+    int vAlocacaoMemoriaProdutos = fRetornaQTDItensArquivo(vCaminhoArquivoProduto, "P"); //Percorre o arquivo de produtos e retorna a quantidade máxima de produtos cadastrados;
 
-    printf("valor %d\n",vAlocacaoMemoriaProdutos); 
+
     int vIndiceVenda = 0;   // indice das vendas armazenadas no dia. Pensem isso como um "generator".
     int vIndiceProduto = 0; // seve para adicionarmos mais itens a venda;
 
@@ -44,8 +45,10 @@ int main()
     char vStatusVenda = 'F'; //VERIFICA SE HÁ VENDA UMA VENDA EM ABERTO OU NÃO
 
     Terceiros *cliente = NULL;
-    
-    Produtos *produto = NULL;
+    cliente = (Terceiros *)fAlocaMemoria(cliente, vAlocacaoMemoriaCliente, sizeof(Terceiros));
+    fAlocaTerceirosLidosArquivo(cliente, vCaminhoArquivoTerceiro);
+
+    Produtos *produto = NULL; 
     produto =(Produtos *)fAlocaMemoria(produto, vAlocacaoMemoriaProdutos,sizeof(Produtos));//Aloca memória o suficiente para a quantidade de produtos previamente lida no arquivo 
     fAlocaProdutosLidosArquivo(produto, vCaminhoArquivoProduto);//Aloca, na memória, os produtos que estão dentro do arquivo.
    
@@ -53,7 +56,6 @@ int main()
     HistoricoVendas *vVendasDia = NULL;
     SaldosVendas vsaldosVendas = {0};
     
-    /*Produtos demonstração;*/
 
     fMenuPrincipal();
     scanf("%d", &vMenu);
@@ -87,9 +89,10 @@ int main()
                 {
                     printf("Quantos clientes deseja cadastrar?\n");
                     scanf("%d", &vInputUsuario);
+                    getchar();
                     vAlocacaoMemoriaCliente += vInputUsuario;
                     cliente = fRealocaClientes((vAlocacaoMemoriaCliente), cliente);
-                    fCadastraClientes(vAlocacaoMemoriaCliente, vInputUsuario, cliente);
+                    fCadastraClientes(vAlocacaoMemoriaCliente, vInputUsuario, cliente, vCaminhoArquivoTerceiro);
                     printf("Retornando ao menu\n");
                     fGetcharParaSubstituirPause();
                 }

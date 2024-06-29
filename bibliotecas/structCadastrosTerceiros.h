@@ -7,7 +7,7 @@
 #include <ctype.h>
 
 /*Personalizadas*/
-#include "utilidades.h"
+
 
 typedef struct 
 {
@@ -28,6 +28,22 @@ typedef struct
    Endereco Endereco;
 } Terceiros;
 
+#include "utilidades.h"
+
+void fOrdenaClientes(Terceiros *cliente, int n) {
+    int i, j;
+    Terceiros temp;
+    for (i = 0; i < n-1; i++) {
+        for (j = 0; j < n-i-1; j++) {
+            if (cliente[j].nomeRegistro[0] > cliente[j+1].nomeRegistro[0]) {
+                temp = cliente[j];
+                cliente[j] = cliente[j+1];
+                cliente[j+1] = temp;
+            } 
+        }
+    }
+}
+
 
 /*Libera memória para o cadastro de uma ou mais clientes, retornando o novo endereço de memória, com tamanho ajustado;*/
 Terceiros* fRealocaClientes (int novoTamanho, Terceiros *clientes){
@@ -42,58 +58,126 @@ Terceiros* fRealocaClientes (int novoTamanho, Terceiros *clientes){
     }
     
 }
-/*função para cadastro de clientes, auto explicativa*/
-void fCadastraClientes (int tamanhoAtual, int inputUsuario, Terceiros *cliente){
+/*Leitura dos cadastros no arquivo*/
+void fAlocaTerceirosLidosArquivo(Terceiros *cliente, char* vCaminhoArquivoCliente)
+{
+    FILE *fptr = fopen(vCaminhoArquivoCliente, "r");
+    int vLinhasLidas = 0;
+    int vColunasLidas = 0;
+    if (fptr == NULL)
+    {
+        perror("Erro ao abrir o arquivo");
+        fGetcharParaSubstituirPause();
+    }
+    do 
+    {
+        //produto = (Produtos *)fAlocaMemoria(produto, vLinhasLidas + 1, sizeof(Produtos));
+        vColunasLidas = fscanf(fptr, "%d,%149[^,],%149[^,],%13[^,],%d,%19[^,],%49[^,],%49[^,],%99[^,],%19[^\n]\n",
+                  &cliente[vLinhasLidas].codigo,
+                  cliente[vLinhasLidas].nomeRegistro,
+                  cliente[vLinhasLidas].nomeSocial,
+                  cliente[vLinhasLidas].cpf,
+                  &cliente[vLinhasLidas].Endereco.UFCliente,
+                  cliente[vLinhasLidas].Endereco.CEP_ZIPCODE,
+                  cliente[vLinhasLidas].Endereco.cidade,
+                  cliente[vLinhasLidas].Endereco.bairro,
+                  cliente[vLinhasLidas].Endereco.rua,
+                  cliente[vLinhasLidas].Endereco.ruaNumero) == 10;
+        if (vColunasLidas != 10 && !feof(fptr))
+        {
+            printf("Erro de formatação do arquivo na linha %d - Coluna %d\n", (vLinhasLidas + 1), vColunasLidas);
+            free(cliente);
+            cliente = NULL;
+            exit(1);
+        }
+        if (vColunasLidas == 10)
+        {
+            vLinhasLidas++;
+        }
+    } while (!feof(fptr));
+    fOrdenaClientes(cliente,vLinhasLidas);
+}
+
+
+/*função para cadastro de clientes, auto explicativa*/                          
+void fCadastraClientes (int tamanhoAtual, int inputUsuario, Terceiros *cliente, char *vCaminhoArquivoTerc){
     char clientePossuiNomeSocial;
     char temporaria[150];//armazena tudo o que for integer para posterior conversão; para eviter de por getchar() em todo canto;
     for (int i = (tamanhoAtual-inputUsuario); i < tamanhoAtual; i++)
     {
-        system("cls");
-        getchar();
-        printf("Entre com o código do novo cliente\n"); 
+        system("clear || cls");
+        printf("Entre com o código do novo cliente\n");
         fgets(temporaria, 150, stdin);
-        sscanf(temporaria, "%d", &cliente[i].codigo); //converte o código do cliente de char para integer
+        sscanf(temporaria, "%d", &cliente[i].codigo); // Converte o código do cliente de char para integer
 
-        printf("Entre com o nome de registro/batismo do novo cliente\n"); 
+        printf("Entre com o nome de registro/batismo do novo cliente\n");
         fgets(cliente[i].nomeRegistro, 150, stdin);
+        cliente[i].nomeRegistro[strcspn(cliente[i].nomeRegistro, "\n")] = '\0';
 
-        printf("Cliente possui nome social?\n"); 
+        printf("Cliente possui nome social? (S/N)\n");
         scanf(" %c", &clientePossuiNomeSocial);
         getchar();
-        if (toupper(clientePossuiNomeSocial) =='S')
+        if (toupper(clientePossuiNomeSocial) == 'S')
         {
-            printf("Entre com o nome social do cliente \n"); 
+            printf("Entre com o nome social do cliente \n");
             fgets(cliente[i].nomeSocial, 150, stdin);
-        }else 
+            cliente[i].nomeSocial[strcspn(cliente[i].nomeSocial, "\n")] = '\0';
+        }
+        else
         {
-            /*strcpy() copia a string usada no segundo argumetno, para o primeiro
-            como estamos usando ponteiro, não dá para fazer cliente[i].nome = "texto", porque um ponteiro não é uma variável
-            em vez disso, dizemos que a posição na memória para onde cliente[i].nomeSocial está apontando vai receber "texto"*/
             strcpy(cliente[i].nomeSocial, "Não Possui");
         }
 
-        printf("Entre com o CPF do cliente (somente Numeros):\n"); 
+        printf("Entre com o CPF do cliente (somente Numeros):\n");
         fgets(cliente[i].cpf, 14, stdin);
+        cliente[i].cpf[strcspn(cliente[i].cpf, "\n")] = '\0';
 
-        printf("Entre com a UF do Cliente\n"); 
+        printf("Entre com a UF do Cliente\n");
         fImprimeEstadosTela();
         fgets(temporaria, sizeof(temporaria), stdin);
-        sscanf(temporaria,"%d", &cliente[i].Endereco.UFCliente);
+        sscanf(temporaria, "%d", &cliente[i].Endereco.UFCliente);
 
-        printf("Entre com o CEP e ou ZIP Code do cliente\n"); 
+        printf("Entre com o CEP e ou ZIP Code do cliente\n");
         fgets(cliente[i].Endereco.CEP_ZIPCODE, 20, stdin);
+        cliente[i].Endereco.CEP_ZIPCODE[strcspn(cliente[i].Endereco.CEP_ZIPCODE, "\n")] = '\0';
 
-        printf("Entre com cidade do cliente\n"); 
+        printf("Entre com cidade do cliente\n");
         fgets(cliente[i].Endereco.cidade, 50, stdin);
+        cliente[i].Endereco.cidade[strcspn(cliente[i].Endereco.cidade, "\n")] = '\0';
 
-        printf("Entre com o bairro do cliente\n"); 
+        printf("Entre com o bairro do cliente\n");
         fgets(cliente[i].Endereco.bairro, 50, stdin);
+        cliente[i].Endereco.bairro[strcspn(cliente[i].Endereco.bairro, "\n")] = '\0';
 
-        printf("Entre com a rua do cliente\n"); 
+        printf("Entre com a rua do cliente\n");
         fgets(cliente[i].Endereco.rua, 100, stdin);
+        cliente[i].Endereco.rua[strcspn(cliente[i].Endereco.rua, "\n")] = '\0';
 
-        printf("Entre com o número da casa\n"); 
+        printf("Entre com o número da casa\n");
         fgets(cliente[i].Endereco.ruaNumero, 20, stdin);
+        cliente[i].Endereco.ruaNumero[strcspn(cliente[i].Endereco.ruaNumero, "\n")] = '\0';
+
+        FILE *fptr = fopen(vCaminhoArquivoTerc, "a");
+        if (fptr == NULL)
+        {
+            printf("Erro ao abrir o arquivo para escrita\n");
+            free(cliente);
+            exit(1);
+        }
+
+        fprintf(fptr, "%d,%s,%s,%s,%d,%s,%s,%s,%s,%s\n",
+                cliente[i].codigo,
+                cliente[i].nomeRegistro,
+                cliente[i].nomeSocial,
+                cliente[i].cpf,
+                cliente[i].Endereco.UFCliente,
+                cliente[i].Endereco.CEP_ZIPCODE,
+                cliente[i].Endereco.cidade,
+                cliente[i].Endereco.bairro,
+                cliente[i].Endereco.rua,
+                cliente[i].Endereco.ruaNumero);
+
+        fclose(fptr);
     }
 }
 
@@ -131,5 +215,50 @@ void fRetornaClientesCadastrados(Terceiros* cliente, int tamanhoAlocado) {
     }
 }
 
+
+int fRetornaQTDTercArquivo( char vCaminhoArquivo[100], char* vTipoArquivoProdTerc)
+{
+    FILE *fptr = fopen(vCaminhoArquivo, "r");
+    int vColunasLidas = 0;
+    int vLinhasLidas=0;
+    Terceiros *cliente = NULL;
+    if (fptr == NULL)
+    {
+        perror("Erro ao abrir o arquivo");
+        return 1;
+    }
+    if (vTipoArquivoProdTerc == "T")
+    {
+        do
+        {
+            printf("chegou aqui dentro\n"); 
+            cliente = (Terceiros *)fAlocaMemoria(cliente, vLinhasLidas + 1, sizeof(Terceiros));
+            vColunasLidas =  fscanf(fptr, "%d,%149[^,],%149[^,],%13[^,],%d,%19[^,],%49[^,],%49[^,],%99[^,],%19[^,\n]",
+                  &cliente[vLinhasLidas].codigo,
+                  cliente[vLinhasLidas].nomeRegistro,
+                  cliente[vLinhasLidas].nomeSocial,
+                  cliente[vLinhasLidas].cpf,
+                  &cliente[vLinhasLidas].Endereco.UFCliente,
+                  cliente[vLinhasLidas].Endereco.CEP_ZIPCODE,
+                  cliente[vLinhasLidas].Endereco.cidade,
+                  cliente[vLinhasLidas].Endereco.bairro,
+                  cliente[vLinhasLidas].Endereco.rua,
+                  cliente[vLinhasLidas].Endereco.ruaNumero);
+            if (vColunasLidas != 10 && !feof(fptr))
+            {
+                printf("Erro de formatação do arquivo na linha %d - Coluna %d\n", (vLinhasLidas + 1), vColunasLidas);
+                free(cliente);
+                cliente = NULL;
+                return 1;
+            }
+            if (vColunasLidas == 10)
+            {
+                vLinhasLidas++;
+            }
+        } while (!feof(fptr));   
+    }
+    fclose(fptr);
+    return vLinhasLidas;
+}
 
 #endif

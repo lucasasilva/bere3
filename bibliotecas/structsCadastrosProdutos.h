@@ -58,7 +58,7 @@ Produtos *fRealocaProdutos(int novoTamanho, Produtos *produto)
 // Aceita como argumentos variável(ponteiro), o controlador de produtos alocados e ponteiro para arquivo de produtos;
 void fAlocaProdutosLidosArquivo(Produtos *produto, char vCaminhoArquivoProduto[100])
 {
-     FILE *fptr = fopen(vCaminhoArquivoProduto, "r");
+    FILE *fptr = fopen(vCaminhoArquivoProduto, "r");
     int vLinhasLidas = 0;
     int vColunasLidas = 0;
     if (fptr == NULL)
@@ -68,7 +68,6 @@ void fAlocaProdutosLidosArquivo(Produtos *produto, char vCaminhoArquivoProduto[1
     }
     do
     {
-        printf("chegou dentro da função\n"); 
         //produto = (Produtos *)fAlocaMemoria(produto, vLinhasLidas + 1, sizeof(Produtos));
         vColunasLidas = fscanf(fptr, "%d, %79[^,],%d, %f, %f, %d,%d,%c",
                                &produto[vLinhasLidas].codigoProduto,
@@ -79,7 +78,6 @@ void fAlocaProdutosLidosArquivo(Produtos *produto, char vCaminhoArquivoProduto[1
                                &produto[vLinhasLidas].qtdEstoque,
                                &produto[vLinhasLidas].qtdEstoqueMin,
                                &produto[vLinhasLidas].statusItem);
-        printf("gravou o produto %d\n", vLinhasLidas); 
         if (vColunasLidas != 8 && !feof(fptr))
         {
             printf("Erro de formatação do arquivo na linha %d - Coluna %d\n", (vLinhasLidas + 1), vColunasLidas);
@@ -92,6 +90,7 @@ void fAlocaProdutosLidosArquivo(Produtos *produto, char vCaminhoArquivoProduto[1
             vLinhasLidas++;
         }
     } while (!feof(fptr));
+    fOrdenaProdutos(produto,vLinhasLidas);
 }
 
 

@@ -4,9 +4,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-
 /*Personalizadas*/
+//#include "structCadastrosTerceiros.h"
 #include "structsCadastrosProdutos.h"
+
 
 /*Retorna uma string com o nome do UF do cliente no relatório de clientes
 e na exibição em tela, no momento do cadastro, assim padroniza o código da UF
@@ -121,10 +122,10 @@ void fGetcharParaSubstituirPause()
     getchar();
 }
 
-void *fAlocaMemoria(void *vPonteiro, int vTotalAlocar, size_t vTamanhoaAlocar)
-{
+void* fAlocaMemoria(void *vPonteiro, int vTotalAlocar, size_t vTamanhoaAlocar)
+{   
     if (vTotalAlocar == 1)
-    {
+    {    
         vPonteiro = calloc(1, vTamanhoaAlocar);
         return vPonteiro;
     }
@@ -141,11 +142,12 @@ void *fAlocaMemoria(void *vPonteiro, int vTotalAlocar, size_t vTamanhoaAlocar)
 
 /*Retorna a quantidade de itens dentro do arquivo
 para usar este valor e alocar espaço o suficiente para o ponteiro que guardará os produtos*/
-int fRetornaQTDItensArquivo(int vLinhasLidas, char vCaminhoArquivo[100], char* vTipoArquivoProdTerc)
+int fRetornaQTDItensArquivo( char vCaminhoArquivo[100], char* vTipoArquivoProdTerc)
 {
     FILE *fptr = fopen(vCaminhoArquivo, "r");
     int vColunasLidas = 0;
-    Produtos *produto;
+    int vLinhasLidas=0;
+    Produtos *produto= NULL;
     if (fptr == NULL)
     {
         perror("Erro ao abrir o arquivo");
@@ -181,4 +183,21 @@ int fRetornaQTDItensArquivo(int vLinhasLidas, char vCaminhoArquivo[100], char* v
     fclose(fptr);
     return vLinhasLidas;
 }
+
+
+void fOrdenaProdutos(Produtos *produtos, int vTotalProdutosCadastrados) {
+    int i, j;
+    Produtos temp;
+    for (i = 0; i < vTotalProdutosCadastrados-1; i++) {
+        for (j = 0; j < vTotalProdutosCadastrados-i-1; j++) {
+            if (produtos[j].nomeProduto[0] > produtos[j+1].nomeProduto[0]) {
+                temp = produtos[j];
+                produtos[j] = produtos[j+1];
+                produtos[j+1] = temp;
+            }
+        }
+    }
+}
+
+
 #endif
